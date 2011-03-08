@@ -7,3 +7,4 @@ src/main/resources/plugin.yml
 src/main/resources/version.txt
 src/main/resources/README.txt
 release/*.zip
+reports/

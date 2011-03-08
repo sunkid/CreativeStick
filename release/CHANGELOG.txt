@@ -1,5 +1,7 @@
 Listed below are released versions and cummulative changes between them
 
+0.4.19
+
 * fixed the toggling of drops
 * implemented specification of items by name, "fuzzy string", or id
 * refactored relevant code from com.nijikokun.bukkit.istick.Items into com.iminurnetz.bukkit.util.MaterialUtils
