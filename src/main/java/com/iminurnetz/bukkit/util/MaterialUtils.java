@@ -332,4 +332,12 @@ public class MaterialUtils {
 		return isDamageable(id);
 	}
 
+	public static Material getPlaceableMaterial(String item) {
+		Material m = getMaterial(item);
+		// TODO other stuff can be placed too, eg. cake
+		if (m.isBlock())
+			return m;
+		return null;
+	}
+
 }

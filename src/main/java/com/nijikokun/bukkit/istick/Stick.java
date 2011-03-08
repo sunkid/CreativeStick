@@ -137,7 +137,7 @@ public class Stick {
 	}
 
 	public boolean setItem(String item) {
-		Material m = MaterialUtils.getMaterial(item);
+		Material m = MaterialUtils.getPlaceableMaterial(item);
 
 		if (m == null) {
 			return false;
@@ -197,6 +197,9 @@ public class Stick {
 		s.append("\n");
 		s.append("Right-Click item switching: ");
 		s.append(doRightClickSwitch());
+		s.append("\n");
+		s.append("Debug mode: ");
+		s.append(isDebug());
 		s.append("\n");
 
 

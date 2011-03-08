@@ -2,6 +2,7 @@ package com.nijikokun.bukkit.istick;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -414,6 +415,15 @@ public class IStick extends JavaPlugin {
 	private boolean checkOptionalItemSwitch(Player player, String item, Stick stick) {
 		if (item != "") {
 			List<Material> items = MaterialUtils.getList(item);
+			
+			// TODO allow all placeable material
+			if (items.size() > 1)
+				for (Iterator<Material> mI = items.iterator(); mI.hasNext();) {
+					Material m = mI.next();
+					if (!m.isBlock())
+						mI.remove();
+				}
+			
 			if (items.size() != 1) {
 				Messaging.send(player, Messaging.getMsgFront(ChatColor.RED) + " Invalid item usage.");
 				String match;
