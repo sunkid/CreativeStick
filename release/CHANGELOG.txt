@@ -1,6 +1,6 @@
-Listed below are released versions and cummulative changes between them
+Listed below are released versions and cumulative changes between them
 
-0.4.19
+0.4.20
 
 * fixed the toggling of drops
 * implemented specification of items by name, "fuzzy string", or id
@@ -10,6 +10,8 @@ Listed below are released versions and cummulative changes between them
 
 * fixed access for ops, now overrides Permissions/GroupManager
 * fixed targeted block by using bukkit's algorithm
+* fixed 'creativestick.*' permission
+* tested with craftbukkit build 497
 
 0.4.14
 
