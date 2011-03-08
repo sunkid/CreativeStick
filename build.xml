@@ -73,6 +73,9 @@
 
 		<jar jarfile="${dist}/${project}-${DSTAMP}.jar">
 			<fileset dir="${build}" excludes="**/tests/**" />
+			<fileset dir="${release}">
+				<include name="license.txt" />
+			</fileset>
 			<fileset dir="${resources}">
 				<include name="*" />
 				<exclude name="*.template" />
