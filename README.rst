@@ -12,24 +12,30 @@ Source: https://github.com/sunkid/CreativeStick
 CREDITS
 -------
 
-This plugin was originally written by Nijikokun and was named iStick. Most of the functionality was developed by him and he deserves all the credit!
+This plugin was originally written by Nijikokun and was named iStick. Most of the functionality
+was developed by him and he deserves all the credit!
 
-CreativeStick will allow you to build, replace, or remove blocks at a distance by simply shaking a stick at them:
+CreativeStick will allow you to build, replace, or remove blocks at a distance by simply shaking
+a stick at them:
 
 WHAT's NEW
 -----------
-All item specification can be now done using either the name of the item (e.g. 'stone'), the id, or a "fuzzy string" shortcut:
+All item specification can be now done using either the name of the item (e.g. 'stone'), the id,
+or a "fuzzy string" shortcut:
 
 * fuzzy strings always start with capital letters
 * upper case letters are the first letters of the words in an item's name
-* using first an upper case and then any number of lower case letters specifies the beginning of a name but does not include spaces
+* using first an upper case and then any number of lower case letters specifies the beginning of
+  a name but does not include spaces
 * a wildcard '*' is accepted and can stand for any sequence of letters and spaces
-* only strings resulting in single items are accepted, if more than one item matches, only 'placeable' items will be considered (right now, placeable is defined as the item being a block; I will work on including other placeable items like cake... everybody likes cake and you can still use it by specifying 'cake')
+* only strings resulting in single items are accepted, if more than one item matches, only
+  'placeable' items will be considered (right now, placeable is defined as the item being a block; I will work on including other placeable items like cake... everybody likes cake and you can still use it by specifying 'cake')
 * if the string matches more than one placeable item, a list of those items is returned
 * examples:
 	* 'IA' is short for 'iron axe'
 	* 'G*re' is short for 'gold ore'
-	* 'So' results in 'soil' (note that it doesn't match 'soul sand' as that item has two words but no wild card was used)
+	* 'So' results in 'soil' (note that it doesn't match 'soul sand' as that item has two words
+	  but no wild card was used)
 	* 'IB' results in 'iron block' as the other matching item ('iron boots') is not placeable
 	* 'S' is invalid as it matches multiple placeable items ('stone', 'sand', etc.)
 
@@ -57,7 +63,8 @@ Functionality:
 #) Support for protection plugins
 #) Support for both it's own permissions or via Permissions or GroupManager
 #) assign 'creativestick.use' to any users who are allowed to use the plugin
-#) assign 'creativestick.config' to any user who are allowed to change configuration parameters for themselves.
+#) assign 'creativestick.config' to any user who are allowed to change configuration parameters
+   for themselves.
 
 INSTALLATION:
 -------------
@@ -72,7 +79,8 @@ UPGRADING FROM PREVIOUS VERSIONS OF CreativeStick:
 --------------------------------------------------
 
 #) follow INSTALLATION steps 1 - 3.
-#) if you see a warning message about an outdated config.yml file, simply follow the instructions in plugins/CreativeStick/config-new.yml (settings.user.debug is the only new parameter in 0.4.14 and can be ignored. Just set settings.version to 0.4.14)
+#) if you see a warning message about an outdated config.yml file, simply follow the instructions
+   in plugins/CreativeStick/config-new.yml (settings.user.debug is the only new parameter in 0.4.14 and can be ignored. Just set settings.version to 0.4.14)
 #) if there is no warning message, you are good to go
 
 MIGRATION FROM iStick:
