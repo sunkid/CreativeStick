@@ -1,0 +1,68 @@
+# This is the default configuration for CreativeStick
+# You can use it instead of the old permissions and item.db files
+# If you are upgrading CreativeStick, look for any comments labeled
+# '(NEW)' below
+
+# IF THE VERSION BELOW IS NOT THE VERSION IN YOUR config.yml CHECK FOR
+# NEW PARAMETERS AND ADD THEM TO YOUR config.yml. THEN, AND ONLY THEN,
+# CHANGE THE VERSION IN YOUR config.yml TO THE ONE BELOW.
+settings:
+    # version of the last update of the config file
+    version: 0.4.15
+
+    # this will allow all ops by default to use the plugin
+    # NOTE: it overrides GroupManager or Permissions system! (NEW)
+    allow-ops: true
+
+    # should the plugin be toggled ON by default
+    enabled: false
+
+    # should items be dropped by default
+    drops: true
+    
+    # The following settings can be changed on a per-user basis in game
+    # if the user has 'creativestick.config' permissions
+    user:
+        # how many steps to undo by default
+        undo: 5
+
+        # protect bottom layer - set to false if users are allowed to create blue holes (NEW)
+        protect-bottom: true
+
+        # the maximum distance at which the stick works
+        distance: 100
+
+        # the tool to use as a stick (default is stick)
+        tool: 280
+
+        # whether or not right-clicking switches to the item clicked on
+        right-click-switch: false
+        
+        # debug mode
+        debug: false
+
+    # if you really want to use the old iStick configuration files, uncomment the
+    # following parameter
+    # ignore-yml: true
+
+# All permissions including the asterisks must be placed in single quotes
+# and assigned to individual users like so:
+#
+# permissions:
+#     user:
+#         - 'creativestick.use'
+#     op_user:
+#         - 'creativestick.use'
+#         - 'creativestick.config'
+#
+# Currently supported permissions:
+#
+#   creativestick.use   : allows a user to use the plugin
+#   creativestick.config: allows a user to also change the configuration in-game (NEW)
+#   creativestick.*     : allows a user to use every feature of the plugin (NEW)
+# 
+# The plugin will try to port your old iStick.permissions file each time
+# it isn't able to find this file. If you already use either the Permissions
+# plugin or the GroupManager plugin, those will be used instead and the
+# below will be ignored. In that case, simply assign the above permissions
+# to the users and groups in the configuration files for those plugins.

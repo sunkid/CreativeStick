@@ -1,0 +1,11 @@
+name: @project@
+main: com.nijikokun.bukkit.istick.IStick
+version: @version@.@minor_version@
+authors: [sunkid <sunkid@iminurnetz.com>, Nijiko "Nijikokun" Yonskai <nijikokun@gmail.com>]
+website: https://github.com/sunkid/CreativeStick
+commands:
+    cs:
+        description: all of the @project@ commands
+        usage: /cs [command] [parameters]. Use '/cs help' for more information!
+        aliases: [is,istick,cstick]
+ 
