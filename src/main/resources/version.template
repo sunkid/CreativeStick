@@ -1,4 +1,0 @@
-project=@project@
-version=@version@
-minor_version=@minor_version@
-build_date=@build_date@

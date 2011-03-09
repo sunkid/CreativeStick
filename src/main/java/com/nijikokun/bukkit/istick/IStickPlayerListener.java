@@ -56,7 +56,7 @@ public class IStickPlayerListener extends PlayerListener {
 
 				plugin.getServer().getPluginManager().callEvent(bpe);
 				if (plugin.isDebug(player))
-					IStick.log(Level.INFO, "fired BlockPlaceEvent");
+					IStick.logger.log("fired BlockPlaceEvent");
 			} else if (mode == Stick.BUILD_MODE) {
 				Material item = stick.getItem();
 				
@@ -72,14 +72,14 @@ public class IStickPlayerListener extends PlayerListener {
 
 				plugin.getServer().getPluginManager().callEvent(bpe);
 				if (plugin.isDebug(player))
-					IStick.log(Level.INFO, "fired BlockPlaceEvent");
+					IStick.logger.log("fired BlockPlaceEvent");
 			}
 			
 			/* BlockBreakEvent don't seem to work yet
 			if (block != null) {
 				BlockBreakEvent bbe = new BlockBreakEvent(block, player);
 				plugin.getServer().getPluginManager().callEvent(bbe);
-				IStick.log(Level.INFO, "fired BlockBreakEvent");
+				IStick.logger.log("fired BlockBreakEvent");
 			}
 			*/
 		}
@@ -101,15 +101,15 @@ public class IStickPlayerListener extends PlayerListener {
 			BlockPlaceEvent bpe = new BlockPlaceEvent(Type.BLOCK_PLACED, targetedBlock, null, targetBlocks.get(0), new ItemStack(stick.getTool()), player, true); 
 
 			if (plugin.isDebug(player))
-				IStick.log(Level.INFO, "onPlayerItem: Player " + player.getDisplayName() + " used CS in mode " + stick.getMode());
+				IStick.logger.log("onPlayerItem: Player " + player.getDisplayName() + " used CS in mode " + stick.getMode());
 			
 			if (targetedBlock == null) {
-				IStick.log(Level.INFO, "onPlayerItem: block is null... ignored event");
+				IStick.logger.log("onPlayerItem: block is null... ignored event");
 				return;
 			}
 
 			if (targetedBlock.getLocation().getBlockY() == 0 && stick.doProtectBottom()) {
-				IStick.log(Level.WARNING, "Player " + player.getDisplayName() + " hit rock bottom!");
+				IStick.logger.log(Level.WARNING, "Player " + player.getDisplayName() + " hit rock bottom!");
 				return;
 			}
 			
@@ -125,13 +125,13 @@ public class IStickPlayerListener extends PlayerListener {
 				BlockBreakEvent bbe = new BlockBreakEvent(targetedBlock, player);
 				plugin.getServer().getPluginManager().callEvent(bbe);
 				if (plugin.isDebug(player))
-					IStick.log(Level.INFO, "fired BlockBreakEvent");
+					IStick.logger.log("fired BlockBreakEvent");
 				targetedBlock.setTypeId(0);
 			}
 
 			plugin.getServer().getPluginManager().callEvent(bpe);
 			if (plugin.isDebug(player))
-				IStick.log(Level.INFO, "fired BlockPlaceEvent");
+				IStick.logger.log("fired BlockPlaceEvent");
 
 
 			item = MaterialUtils.getPlaceableMaterial(item);

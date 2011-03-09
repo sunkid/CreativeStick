@@ -21,16 +21,14 @@
  *    Please contact sunkid.com
  */
 
-package com.iminurnetz.util.tests;
+package com.iminurnetz.bukkit.plugin.creativestick.tests;
 
-import com.iminurnetz.util.Version;
+import com.iminurnetz.bukkit.plugin.creativestick.CreativeStickCommand;
 
 import junit.framework.TestCase;
 
-public class VersionTest extends TestCase {
-	public void testVersion() {
-		assertNotNull(getClass().getResource("version.txt"));
-		Version v = new Version(getClass().getResource("version.txt"));
-		assertEquals("VersionTest", v.getProject());
+public class CreativeStickCommandTest extends TestCase {
+	public void testToString() {
+		assertEquals("-v|version - Display the current version.", CreativeStickCommand.VERSION.toString().replaceAll("\\s+", " "));
 	}
 }

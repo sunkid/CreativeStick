@@ -5,7 +5,7 @@ import java.util.Vector;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 
-import com.iminurnetz.bukkit.creativestick.ConfigurationService;
+import com.iminurnetz.bukkit.plugin.creativestick.ConfigurationService;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 
 public class Stick {

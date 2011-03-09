@@ -24,43 +24,47 @@
 package com.iminurnetz.bukkit.permissions;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.dataholder.worlds.WorldsHolder;
 import org.bukkit.plugin.PluginManager;
 
+import com.iminurnetz.bukkit.plugin.BukkitPlugin;
+import com.iminurnetz.bukkit.plugin.util.PluginLogger;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class PermissionHandlerService {
-	private static final Logger log = Logger.getLogger("Minecraft");
+	private static PluginLogger log;
 	
-	public static PermissionHandler getHandler(PluginManager manager) {
+	public static PermissionHandler getHandler(BukkitPlugin plugin) {
+		
+		log = plugin.getLogger();
 		
 		PermissionHandler handler = null;
+		PluginManager pm = plugin.getServer().getPluginManager();
 		
-		if (manager.getPlugin("GroupManager") != null) {
+		if (pm.getPlugin("GroupManager") != null) {
 			log.log(Level.INFO, "Using GroupManager permissions");
-			GroupManager mgr = (GroupManager) manager.getPlugin("GroupManager");
-			manager.enablePlugin(mgr);
+			GroupManager mgr = (GroupManager) pm.getPlugin("GroupManager");
+			pm.enablePlugin(mgr);
 			WorldsHolder wd = mgr.getWorldsHolder();
 			GroupManagerPermissions gp = new GroupManagerPermissions(wd);
 			handler = gp;
-		} else if (manager.getPlugin("Permissions") != null) {
+		} else if (pm.getPlugin("Permissions") != null) {
 			log.log(Level.INFO, "Using Permissions' permissions");
-			Permissions p = (Permissions) manager.getPlugin("Permissions");
-			manager.enablePlugin(p);
+			Permissions p = (Permissions) pm.getPlugin("Permissions");
+			pm.enablePlugin(p);
 			NijikokunPermissions np = new NijikokunPermissions();
 			np.setHandler(p.getHandler());
 			handler = np;
 		} else {
-			handler = getHandler(manager, false);
+			handler = getHandler(false);
 		}
 		
 		return handler;
 	}
 
-	public static PermissionHandler getHandler(PluginManager manager, boolean defaultPermission) {
+	public static PermissionHandler getHandler(boolean defaultPermission) {
 		String verb = defaultPermission ? "allow" : "deny";
 		log.log(Level.WARNING, "Setting default permissions to " + verb + " all actions");
 		return new DefaultPermissions(defaultPermission);

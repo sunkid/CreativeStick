@@ -28,14 +28,10 @@
 				<filtersfile file="${resources}/version.properties" />
 			</filterset>
 		</copy>
-		<copy file="${resources}/version.template" tofile="${resources}/version.txt" overwrite="true">
-			<filterset>
-				<filtersfile file="${resources}/version.properties" />
-			</filterset>
-		</copy>
 	</target>
 
 	<target name="compile" depends="init" description="compile the source ">
+		<echo>Compiling ${project} v${version}.${minor_version}</echo>
 		<javac srcdir="${src}" destdir="${build}">
 			<classpath refid="classpath" />
 		</javac>
@@ -43,6 +39,7 @@
 	</target>
 
 	<target name="debug-compile" depends="clean, init" description="compile the source with debug">
+		<echo>Compiling ${project} v${version}.${minor_version} DEBUG</echo>
 		<javac srcdir="${src}" destdir="${build}" debug="on">
 			<classpath refid="classpath" />
 		</javac>
@@ -69,10 +66,14 @@
 	</target>
 		
 	<target name="jarfile" description="create the jar file">
+		<echo>Building jar for ${project} v${version}.${minor_version}</echo>
 		<mkdir dir="${dist}" />
 
 		<jar jarfile="${dist}/${project}-${DSTAMP}.jar">
-			<fileset dir="${build}" excludes="**/tests/**" />
+			<fileset dir="${build}">
+				<exclude name="**/tests/**" />
+				<exclude name="**/accesslog/**"/>
+			</fileset>
 			<fileset dir="${release}">
 				<include name="license.txt" />
 			</fileset>
@@ -97,6 +98,7 @@
 	</target>
 
 	<target name="test" depends="debug-compile" description="run all tests and generate a report">
+		<echo>Testing ${project} v${version}.${minor_version}</echo>
 		<copy todir="${build}">
 			<fileset dir="${src}" excludes="**/*.java" />
 		</copy>

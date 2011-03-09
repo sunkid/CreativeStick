@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,18 +19,19 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import com.iminurnetz.bukkit.creativestick.CSPermissionHandler;
-import com.iminurnetz.bukkit.creativestick.ConfigurationService;
-import com.iminurnetz.bukkit.creativestick.CreativeStickCommand;
-import com.iminurnetz.bukkit.creativestick.UndoListener;
+import com.iminurnetz.bukkit.plugin.BukkitPlugin;
+import com.iminurnetz.bukkit.plugin.creativestick.CSPermissionHandler;
+import com.iminurnetz.bukkit.plugin.creativestick.ConfigurationService;
+import com.iminurnetz.bukkit.plugin.creativestick.CreativeStickCommand;
+import com.iminurnetz.bukkit.plugin.creativestick.UndoListener;
+import com.iminurnetz.bukkit.plugin.util.PluginLogger;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 import com.iminurnetz.util.PersistentProperty;
 import com.iminurnetz.util.Version;
 
-public class IStick extends JavaPlugin {
-	private static Logger logger;
+public class IStick extends BukkitPlugin {
+	protected static PluginLogger logger;
 
 	private final PlayerListener playerListener = new IStickPlayerListener(this);
 	private final BlockListener undoListener = new UndoListener(this);
@@ -50,20 +49,13 @@ public class IStick extends JavaPlugin {
 	public static final Version version = new Version();
 
 	public IStick() {
-		IStick.log(Level.INFO, "loaded");
-	}
-
-	public static Logger getLogger() {
-		return logger;
-	}
-
-	public static void setLogger(Logger logger) {
-		IStick.logger = logger;
+		super();
+		logger = getLogger();
 	}
 
 	@Override
 	public void onDisable() {
-		IStick.log(Level.INFO, "un-loaded");
+		logger.log("un-loaded");
 	}
 
 	@Override
@@ -84,22 +76,8 @@ public class IStick extends JavaPlugin {
 
 	public void setup() {
 		server = getServer();
-		configLoader = new ConfigurationService(getDataFolder(), getConfiguration());
-		permissionHandler = configLoader.getPermissionHandler(server.getPluginManager());
-	}
-
-	public static void log(Level level, String msg) {
-		String logMsg = "[" + version.getProject() + " " + version.getVersion() + "." + version.getMinorVersion() + "] " + msg;
-
-		if (logger == null && server == null) {
-			Logger.getLogger("Minecraft").log(level, logMsg);
-			return;
-		}
-
-		if (logger == null)
-			logger = server.getLogger();
-
-		logger.log(level, logMsg);
+		configLoader = new ConfigurationService(this);
+		permissionHandler = configLoader.getPermissionHandler();
 	}
 
 	@Override
