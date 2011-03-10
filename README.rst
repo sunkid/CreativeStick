@@ -19,6 +19,9 @@ a stick at them:
 
 WHAT's NEW
 -----------
+Since version 0.4.25 players (or admins, depending on the permissions) can choose whether drops produce anything
+removed or replaced or whether they only produce "naturally dropped" items as if mined conventionally.
+
 All item specification can be now done using either the name of the item (e.g. 'stone'), the id,
 or a "fuzzy string" shortcut:
 
@@ -28,7 +31,8 @@ or a "fuzzy string" shortcut:
   a name but does not include spaces
 * a wildcard '*' is accepted and can stand for any sequence of letters and spaces
 * only strings resulting in single items are accepted, if more than one item matches, only
-  'placeable' items will be considered (right now, placeable is defined as the item being a block; I will work on including other placeable items like cake... everybody likes cake and you can still use it by specifying 'cake')
+  'placeable' items will be considered (right now, placeable is defined as the item being a block;
+  I will work on including other placeable items like cake... everybody likes cake and you can still use it by specifying 'cake')
 * if the string matches more than one placeable item, a list of those items is returned
 * examples:
 	* 'IA' is short for 'iron axe'
