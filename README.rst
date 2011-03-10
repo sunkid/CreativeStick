@@ -5,9 +5,8 @@ By sunkid
 
 CreativeStick - Build, replace, or remove blocks at a distance
 
-Latest release: `CreativeStick v0.4.20 <https://github.com/downloads/sunkid/CreativeStick/CreativeStick-0.4.20.zip>`_
 Discussion Forum Link: http://bit.ly/cs4bukkit
-Source: https://github.com/sunkid/CreativeStick
+Source & Latest Release: https://github.com/sunkid/CreativeStick
 
 CREDITS
 -------
