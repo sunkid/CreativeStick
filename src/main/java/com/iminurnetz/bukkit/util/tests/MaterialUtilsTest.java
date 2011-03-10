@@ -62,6 +62,12 @@ public class MaterialUtilsTest extends TestCase {
 		Collections.sort(materials);
 		assertEquals(materials, getSorted(MaterialUtils.getMatchingMaterials("Go*e")));	
 	}
+	
+	public void testGetList() {
+		List<Material> materials = Arrays.asList(Material.GOLD_ORE);
+		assertEquals(materials, MaterialUtils.getList("gold_ore"));
+		assertEquals(materials, MaterialUtils.getList("gold ore"));
+	}
 
 	public void testIsDamageable() {
 		for (int id = 1; id <= 2257; id++) {

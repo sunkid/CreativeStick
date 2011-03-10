@@ -24,17 +24,19 @@ import com.iminurnetz.bukkit.plugin.BukkitPlugin;
 import com.iminurnetz.bukkit.plugin.creativestick.CSPermissionHandler;
 import com.iminurnetz.bukkit.plugin.creativestick.ConfigurationService;
 import com.iminurnetz.bukkit.plugin.creativestick.CreativeStickCommand;
-import com.iminurnetz.bukkit.plugin.creativestick.UndoListener;
+import com.iminurnetz.bukkit.plugin.creativestick.CSPlayerListener;
+import com.iminurnetz.bukkit.plugin.creativestick.CSEventListener;
 import com.iminurnetz.bukkit.plugin.util.MessageUtils;
 import com.iminurnetz.bukkit.plugin.util.PluginLogger;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 import com.iminurnetz.util.PersistentProperty;
+import com.iminurnetz.util.StringUtils;
 
 public class IStick extends BukkitPlugin {
 	protected static PluginLogger logger;
 
-	private final PlayerListener playerListener = new IStickPlayerListener(this);
-	private final BlockListener undoListener = new UndoListener(this);
+	private final PlayerListener playerListener = new CSPlayerListener(this);
+	private final BlockListener undoListener = new CSEventListener(this);
 
 	public static CSPermissionHandler permissionHandler;
 	protected ConfigurationService configLoader;
@@ -67,6 +69,8 @@ public class IStick extends BukkitPlugin {
 
 		pm.registerEvent(Event.Type.PLAYER_ANIMATION, playerListener, Priority.Lowest, this);
 		pm.registerEvent(Event.Type.PLAYER_ITEM, playerListener, Priority.Lowest, this);
+		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLAYER_ITEM_HELD, playerListener, Priority.Monitor, this);
 		// pm.registerEvent(Event.Type.BLOCK_BREAK, undoListener,
 		// Priority.Monitor, this);
 		pm.registerEvent(Event.Type.BLOCK_PLACED, undoListener, Priority.Highest, this);
@@ -133,15 +137,15 @@ public class IStick extends BukkitPlugin {
 			break;
 
 		case TOGGLE_MODE:
-			success = toggleMode(player, args.length > 1 ? args[1] : "");
+			success = toggleMode(player, getItemFromArgs(args));
 			break;
 
 		case BUILD:
-			success = toggleBuild(player, args.length > 1 ? args[1] : "");
+			success = toggleBuild(player, getItemFromArgs(args));
 			break;
 
 		case REPLACE:
-			success = toggleReplace(player, args.length > 1 ? args[1] : "");
+			success = toggleReplace(player, getItemFromArgs(args));
 			break;
 
 		case UNDO:
@@ -170,12 +174,13 @@ public class IStick extends BukkitPlugin {
 			return true;
 		}
 
-		if (!permissionHandler.hasPermission(player, CSPermissionHandler.CAN_CONFIGURE_PERMISSION)) {
+		String param = args[1];
+
+		if (!permissionHandler.canConfigure(player, param)) {
 			MessageUtils.send(player, CreativeStickCommand.CONFIG.showAccessDenied());
 			return true;
 		}
 
-		String param = args[1];
 		String value = args.length < 3 ? "" : args[2];
 
 		if (param.equalsIgnoreCase("distance")) {
@@ -205,7 +210,7 @@ public class IStick extends BukkitPlugin {
 		}
 
 		if (param.equalsIgnoreCase("protect-bottom")) {
-			boolean protectBottom = new Boolean(value).booleanValue();
+			boolean protectBottom = StringUtils.isTrue(value);
 			stick.doProtectBottom(protectBottom);
 
 			if (protectBottom)
@@ -217,7 +222,7 @@ public class IStick extends BukkitPlugin {
 		}
 
 		if (param.equalsIgnoreCase("natural-drops")) {
-			boolean naturalDrops = new Boolean(value).booleanValue();
+			boolean naturalDrops = StringUtils.isTrue(value);
 			stick.setNaturalDrops(naturalDrops);
 
 			if (naturalDrops)
@@ -229,7 +234,7 @@ public class IStick extends BukkitPlugin {
 		}
 
 		if (param.equalsIgnoreCase("right-click-switch")) {
-			boolean doRightClickSwitch = new Boolean(value).booleanValue();
+			boolean doRightClickSwitch = StringUtils.isTrue(value);
 			stick.setRightClickSwitch(doRightClickSwitch);
 
 			if (doRightClickSwitch)
@@ -250,11 +255,12 @@ public class IStick extends BukkitPlugin {
 			}
 
 			stick.setUndoAmount(undo);
+			MessageUtils.send(player, "Set undos to " + undo);
 			return true;
 		}
 
 		if (param.equalsIgnoreCase("debug")) {
-			boolean doDebug = new Boolean(value).booleanValue();
+			boolean doDebug = StringUtils.isTrue(value);
 			stick.setDebug(doDebug);
 
 			if (doDebug)
@@ -378,10 +384,12 @@ public class IStick extends BukkitPlugin {
 			stick.toggle();
 			sendToggleMessage(player, stick);
 			return true;
-		} else if (stick.getMode() == 1) {
-			stick.setMode(2);
+		} else if (stick.getMode() == Stick.REMOVE_MODE) {
+			stick.setMode(Stick.REPLACE_MODE);
+		} else if (stick.getMode() == Stick.REPLACE_MODE){
+			stick.setMode(Stick.BUILD_MODE);
 		} else {
-			stick.setMode(1);
+			stick.setMode(Stick.REMOVE_MODE);
 		}
 
 		sendToggleMessage(player, stick);
@@ -437,7 +445,26 @@ public class IStick extends BukkitPlugin {
 		return true;
 	}
 
-	protected void sendToggleMessage(Player player, Stick stick) {
+	private String getItemFromArgs(String[] args) {
+		if (args.length <= 1) {
+			return "";
+		}
+		
+		StringBuilder name = new StringBuilder();
+		for (int n = 1; n < args.length; n++) {
+			int i = args[n].indexOf(',');
+			if (i != -1) {
+				
+			} else {
+				name.append(args[n]);
+				name.append(" ");
+			}
+		}
+		
+		return name.toString().trim();
+	}
+
+	public void sendToggleMessage(Player player, Stick stick) {
 		StringBuilder msg = new StringBuilder().append("You are now ").append(ChatColor.RED);
 		msg.append(stick.getModeAsString()).append(ChatColor.WHITE);
 		if (stick.getMode() != Stick.REMOVE_MODE)

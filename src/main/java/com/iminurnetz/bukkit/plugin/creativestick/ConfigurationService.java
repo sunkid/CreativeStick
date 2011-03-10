@@ -51,7 +51,7 @@ public class ConfigurationService {
 	private BukkitPlugin plugin;
 	
 	// used to check the config file for updates
-	public static final String LAST_CHANGED_IN_VERSION = "0.4.22";
+	public static final String LAST_CHANGED_IN_VERSION = "0.4.27";
 	
 	// TODO convert to enums
 	// global settings

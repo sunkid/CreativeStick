@@ -1,5 +1,6 @@
 package com.nijikokun.bukkit.istick;
 
+import java.util.ArrayDeque;
 import java.util.Vector;
 
 import org.bukkit.Material;
@@ -9,33 +10,31 @@ import com.iminurnetz.bukkit.plugin.creativestick.ConfigurationService;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 
 public class Stick {
+	public static final int REMOVE_MODE = 0;
+	public static final int REPLACE_MODE = 1;
+	public static final int BUILD_MODE = 2;
+	
 	private int amount = 1;
 	private int area = 0;
-	private Vector<BlockState> blocks;
+	private Vector<BlockState> blocks = new Vector<BlockState>();
 	private int distance;
 	private boolean drops;
 	private boolean enabled;
-	private Vector<String> ignore;
-	private Material item;
-	private int mode = 0;
+	private Vector<Material> ignore = new Vector<Material>();
+	private Material item = Material.AIR;
+	private int mode = REMOVE_MODE;
 	private boolean protectBottom;
 	private boolean rightClickSwitch;
 	private boolean debug;
 	private Material tool;
 	private int undoAmount;
-	private boolean useable;
+	private boolean useable = false;
 	private boolean naturalDrops;
-	private boolean hasNew = false;
 	
-	public static final int REMOVE_MODE = 0;
-	public static final int REPLACE_MODE = 1;
-	public static final int BUILD_MODE = 2;
-	
+	private ArrayDeque<BlockStateForSwitching> actionQueue = new ArrayDeque<BlockStateForSwitching>();
 
 	public Stick(ConfigurationService configService) {
-		this.blocks = new Vector<BlockState>();
-		this.ignore = new Vector<String>();
-		this.ignore.add("0");
+		this.ignore.add(Material.AIR);
 		this.enabled = configService.isEnabled();
 		this.drops = configService.doesDrop();
 		this.undoAmount = configService.getUndoAmount();
@@ -45,12 +44,9 @@ public class Stick {
 		this.naturalDrops = configService.doesNaturalDrops();
 		this.setDebug(configService.isDebug());
 		this.tool = configService.getTool();
-		this.useable = false;
-		this.mode = REMOVE_MODE;
 	}
 
 	public void addBlock(BlockState blockState) {
-		hasNew = true;
 		this.blocks.add(blockState);
 	}
 
@@ -78,7 +74,7 @@ public class Stick {
 		return this.distance;
 	}
 
-	public Vector<String> getIgnore() {
+	public Vector<Material> getIgnore() {
 		return this.ignore;
 	}
 
@@ -106,9 +102,9 @@ public class Stick {
 		return undoAmount;
 	}
 
-	public void ignore(String block) {
-		if (!this.ignore.contains(block))
-			this.ignore.add(block);
+	public void ignore(Material m) {
+		if (!this.ignore.contains(m))
+			this.ignore.add(m);
 	}
 
 	public boolean isDrops() {
@@ -144,7 +140,12 @@ public class Stick {
 	}
 
 	public void setItem(Material m) {
-		this.item = m;
+		if (!MaterialUtils.isSameMaterial(item, m)) {
+			this.item = m;
+			didItemSwitch = true;
+		} else {
+			didItemSwitch = false;
+		}
 	}
 
 	public boolean setItem(String item) {
@@ -200,7 +201,7 @@ public class Stick {
 		s.append("Undos: default: ");
 		s.append(getUndoAmount());
 		s.append(" (available: ");
-		s.append(getBlocks().size() -1);
+		s.append(getBlocks().size());
 		s.append(")\n");
 		s.append("Protect bottom: ");
 		s.append(doProtectBottom());
@@ -264,11 +265,69 @@ public class Stick {
 		return naturalDrops;
 	}
 
-	public BlockState getNewBlockState() {
-		if (hasNew ) {
-			hasNew = false;
-			return getBlocks().lastElement();
+	/**
+	 * Attempts to place a BlockState into this stick's action queue.
+	 * @param state the BlockState for the user's queued action
+	 * @return true on success, false otherwise
+	 */
+	public synchronized boolean enqueue(BlockState state) {
+		return enqueue(state, false);
+	}
+	
+	private boolean didItemSwitch = false;
+	
+	/**
+	 * Attempts to place a BlockState into this stick's action queue and also specifies whether
+	 * to use it as the source for the next item to use. It actually does not switch the item
+	 * in use but delays that decision until dequeue is called.
+	 * @param state the BlockState for the user's queued action
+	 * @param forItemSwitching whether to use this blocks material for future actions
+	 * @return true on success, false otherwise
+	 */
+	public synchronized boolean enqueue(BlockState state, boolean forItemSwitching) {
+		if (state != null) {
+			return actionQueue.add(new BlockStateForSwitching(state, forItemSwitching && doRightClickSwitch()));
 		}
-		return null;
+	
+		return false;
+	}
+
+	/**
+	 * Returns the next BlockState to act on. It also attempts to switch to this item if the enqueue
+	 * method was told to do so.
+	 * @return the BlockState next in line or null if there are none.
+	 */
+	public synchronized BlockState dequeue() {
+		BlockStateForSwitching bs4s = actionQueue.pollFirst();
+		if (bs4s == null) {
+			return null;
+		}
+		
+		BlockState state = bs4s.state;
+		
+		Material item = state.getBlock().getState().getType();
+		item = MaterialUtils.getPlaceableMaterial(item);
+		
+		didItemSwitch = bs4s.doSwitch;
+		
+		if (item != null && bs4s.doSwitch) {
+			setItem(item);
+		}
+		return state;
+	}
+	
+
+	
+	public boolean didItemSwitch() {
+		return didItemSwitch;
+	}
+}
+
+class BlockStateForSwitching {
+	protected BlockState state;
+	protected boolean doSwitch;
+	protected BlockStateForSwitching(BlockState state, boolean doSwitch) {
+		this.state = state;
+		this.doSwitch = doSwitch;
 	}
 }

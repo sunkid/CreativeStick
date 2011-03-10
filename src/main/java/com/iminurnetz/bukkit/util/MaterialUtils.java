@@ -285,6 +285,10 @@ public class MaterialUtils {
 	 * @return true if the name of any of the m2 Material enum members matches the name of m1
 	 */
 	public static boolean isSameMaterial(Material m1, Material... m2) {
+		if (m1 == null) {
+			return false;
+		}
+		
 		for (Material m : m2) {
 			if (m1.name().equals(m.name())) {
 				return true;
@@ -517,7 +521,7 @@ public class MaterialUtils {
 	}
 
 	public static Material getPlaceableMaterial(Material m) {
-		if (m.isBlock())
+		if (m.isBlock() && !isSameMaterial(m, Material.AIR))
 			return m;
 		
 		if (isWater(m)) {
@@ -603,7 +607,7 @@ public class MaterialUtils {
 			id = Integer.valueOf(item).intValue();
 			m = Material.getMaterial(id);
 		} catch (NumberFormatException e) {
-			m = Material.getMaterial(item);
+			m = Material.getMaterial(item.toUpperCase());
 			if (m == null) {
 				results = getMatchingMaterials(item);
 			}

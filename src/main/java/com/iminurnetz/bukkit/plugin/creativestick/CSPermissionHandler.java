@@ -96,12 +96,18 @@ public class CSPermissionHandler implements PermissionHandler {
 		return (hasPermission(player, command.getPermission()) || canDoEverything(player));
 	}
 	
-	public boolean canConfigure(Player player) {
-		return (hasPermission(player, CAN_CONFIGURE_PERMISSION) || canDoEverything(player));
+	public boolean canConfigureAll(Player player) {
+		return (hasPermission(player, CAN_CONFIGURE_PERMISSION)
+				|| hasPermission(player, CAN_CONFIGURE_PERMISSION + ".*")
+				|| canDoEverything(player));
 	}
 
 	public boolean canDoEverything(Player player) {
 		return hasPermission(player, CAN_DO_EVERYTHING);
+	}
+
+	public boolean canConfigure(Player player, String param) {
+		return canConfigureAll(player) || hasPermission(player, CAN_CONFIGURE_PERMISSION + "." + param.toLowerCase());
 	}
 
 }

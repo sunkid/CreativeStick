@@ -2,6 +2,14 @@ Listed below are released versions and cumulative changes between them
 
 @version@.@minor_version@
 
+* added an action queue to the Stick instead of using undo
+* refactored the IStickPlayerListener into com.iminurnetz.bukkit.plugin.creativestick.CSPlayerListener
+* added toggling back to remove mode back in again and fixed the initial state
+* added notification when the Stick is selected
+* implemented creativestick.config.<param> permissions
+
+0.4.25
+
 * fixed the handling of water
 * fixed 'creativestick.*' permission for reals
 * fixed the placing of non-placeable blocks

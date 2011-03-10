@@ -29,8 +29,12 @@ public class MessageUtils {
 			return -1;
 		}
 	}
-
+	
 	public static void send(Player player, String message) {
+		send(player, ChatColor.WHITE, message);
+	}
+	
+	public static void send(Player player, ChatColor color, String message) {
 		for (String line : message.split("\n"))
 			player.sendMessage(line);
 	}

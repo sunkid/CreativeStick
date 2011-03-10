@@ -109,4 +109,9 @@ public class StringUtils {
 		}
 		return results;
 	}
+
+	public static boolean isTrue(String value) {
+		String word = value.toLowerCase();
+		return (word.equals("true") || word.equals("1") || word.equals("on"));
+	}
 }

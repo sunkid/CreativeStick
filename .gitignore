@@ -4,5 +4,6 @@
 build/
 dist/
 src/main/resources/plugin.yml
+src/main/java/com/iminurnetz/bukkit/plugin/accesslog/*
 release/*.zip
 reports/
