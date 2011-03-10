@@ -23,11 +23,6 @@
 				<filtersfile file="${resources}/version.properties" />
 			</filterset>
 		</copy>
-		<copy file="${resources}/README.template" tofile="${resources}/README.txt" overwrite="true">
-			<filterset>
-				<filtersfile file="${resources}/version.properties" />
-			</filterset>
-		</copy>
 	</target>
 
 	<target name="compile" depends="init" description="compile the source ">
@@ -89,7 +84,16 @@
 		<antcall target="clean" />
 		<antcall target="dist" />
 		<copy file="${dist}/${project}-${DSTAMP}.jar" tofile="${release}/${project}.jar" />
-		<copy file="${resources}/README.txt" tofile="${release}/README.txt" overwrite="true" />
+		<copy file="${resources}/README.template" tofile="${resources}/README.txt" overwrite="true">
+			<filterset>
+				<filtersfile file="${resources}/version.properties" />
+			</filterset>
+		</copy>
+		<copy file="${resources}/CHANGELOG.template" tofile="${resources}/CHANGELOG.txt" overwrite="true">
+			<filterset>
+				<filtersfile file="${resources}/version.properties" />
+			</filterset>
+		</copy>
 		<zip destfile="${release}/${project}-${version}.${minor_version}.zip"
 		     basedir="${release}/" excludes="**/*.zip" />
 		<exec executable="github-upload">

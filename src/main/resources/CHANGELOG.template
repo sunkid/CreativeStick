@@ -1,5 +1,16 @@
 Listed below are released versions and cumulative changes between them
 
+@version@
+
+* fixed the handling of water
+* fixed 'creativestick.*' permission for reals
+* fixed the placing of non-placeable blocks
+* implemented incendiarism
+* implemented "natural drops" where a player only gets the items dropped that a block naturally drops (if any)
+* removed gratuitous drops when actions were undone
+* refactored the old Messaging code into com.iminurnetz.bukkit.util.MessageUtils
+* tested with craftbukkit build 526
+
 0.4.20
 
 * fixed the toggling of drops
