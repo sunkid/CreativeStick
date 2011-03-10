@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -284,7 +286,7 @@ public class MaterialUtils {
 	 */
 	public static boolean isSameMaterial(Material m1, Material... m2) {
 		for (Material m : m2) {
-			if (m1.name().equals(m)) {
+			if (m1.name().equals(m.name())) {
 				return true;
 			}
 		}
@@ -395,7 +397,11 @@ public class MaterialUtils {
 	public static List<ItemStack> getDroppedMaterial(BlockState state) {
 		Material m = state.getType();
 		byte originalData = state.getRawData();
-		
+		return getDroppedMaterial(m, originalData);
+	}
+	
+	// utility method for testing only
+	public static List<ItemStack> getDroppedMaterial(Material m, byte originalData) {
 		int n = 0;
 		Material dm = Material.AIR;
 		byte data = (byte) 0;
@@ -406,6 +412,7 @@ public class MaterialUtils {
 
 		if (isSameMaterial(m, Material.STONE, Material.COBBLESTONE)) {
 			dm = Material.COBBLESTONE;
+			n = 1;
 		} else if (isOre(m)) {
 			if (isSameMaterial(m, Material.LAPIS_ORE)) {
 				n = generator.nextInt(5) + 4;
@@ -416,11 +423,12 @@ public class MaterialUtils {
 				dm = Material.REDSTONE;
 			} else if (isSameMaterial(m, Material.COAL_ORE, Material.DIAMOND_ORE)) {
 				dm = MaterialUtils.getMaterial(m.name().substring(0, m.name().length() - 4));
+				n = 1;
 			} else {
 				n = 1;
 				dm = m;
 			}
-		} else if (isDirt(m)) {
+		} else if (isDirt(m)) {			
 			n = 1;
 			dm = Material.DIRT;
 		} else if (isBlockBlock(m) && !isBed(m)) {
@@ -433,12 +441,21 @@ public class MaterialUtils {
 			} else {
 				dm = m;
 			}
-		} else if (isBed(m)) {
+		} else if (isBed(m) && m.isBlock()) {
 			dm = Material.BED_BLOCK;
 			n = 1;
 		} else if (isStep(m)) {
 			dm = Material.STEP;
 			n = isSameMaterial(m, Material.STEP) ? 1 : 2;
+		} else if (isStairs(m)) {
+			dm = getMaterial(m.name().substring(0, m.name().length() - 7));
+			n = 1;
+		} else if (isSameMaterial(m, Material.CLAY)) {
+			n = 4;
+			dm = Material.CLAY_BALL;
+		} else if (isSameMaterial(m, Material.GLOWSTONE)) {
+			n = 1;
+			dm = Material.GLOWSTONE_DUST;
 		} else if (isSameMaterial(m, Material.REDSTONE_WIRE)) {
 			dm = Material.REDSTONE;
 			n = 1;
@@ -451,20 +468,36 @@ public class MaterialUtils {
 		} else if (isFurnace(m)) {
 			dm = Material.FURNACE;
 			n = 1;
-		} else if (isSign(m)) {
+		} else if (isSign(m) && m.isBlock()) {
 			dm = Material.SIGN;
 			n = 1;
-		} else if (isDoor(m)) {
-			dm = isSameMaterial(Material.WOODEN_DOOR) ? Material.WOOD_DOOR : Material.IRON_DOOR;
+		} else if (isDoor(m) && m.isBlock()) {
+			dm = isSameMaterial(m, Material.WOODEN_DOOR) ? Material.WOOD_DOOR : Material.IRON_DOOR;
 			n = 1;
-		} else if (isSameMaterial(Material.REDSTONE_TORCH_OFF)) {
+		} else if (isSameMaterial(m, Material.REDSTONE_TORCH_OFF)) {
 			dm = Material.REDSTONE_TORCH_ON;
 			n = 1;
-		} else if (isSameMaterial(Material.SNOW)) {
+		} else if (isSameMaterial(m, Material.SNOW)) {
 			dm = Material.SNOW_BALL;
 			n = 1;
-		} else if (isDiode(m)) {
+		} else if (isDiode(m) && m.isBlock()) {
 			dm = Material.DIODE;
+			n = 1;
+		} else if (isSameMaterial(m, Material.GRAVEL)) {
+			if (generator.nextInt(6) == 0) {
+				items.add(new ItemStack(Material.FLINT, 1));
+			}
+			n = 1;
+			dm = m;
+		} else if (m.isBlock() &&
+					!isSameMaterial(m, Material.AIR, Material.LEAVES, 
+									   Material.SPONGE, Material.GLASS,
+									   Material.BEDROCK, Material.MOB_SPAWNER,
+									   Material.ICE, Material.PORTAL,
+									   Material.CAKE_BLOCK) &&
+					!isWater(m) &&
+					!isLava(m)) {
+			dm = m;
 			n = 1;
 		}
 
@@ -473,6 +506,10 @@ public class MaterialUtils {
 		}
 		
 		return items;
+	}
+
+	public static boolean isStairs(Material m) {
+		return isSameMaterial(m, Material.WOOD_STAIRS, Material.COBBLESTONE_STAIRS);
 	}
 
 	public static Material getPlaceableMaterial(int id) {

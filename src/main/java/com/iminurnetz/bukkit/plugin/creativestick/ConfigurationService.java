@@ -41,7 +41,6 @@ import org.bukkit.util.config.Configuration;
 import org.bukkit.util.config.ConfigurationNode;
 
 import com.iminurnetz.bukkit.plugin.BukkitPlugin;
-import com.iminurnetz.bukkit.plugin.util.PluginLogger;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 import com.iminurnetz.util.PersistentProperty;
 

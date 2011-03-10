@@ -25,6 +25,7 @@ public class Stick {
 	private int undoAmount;
 	private boolean useable;
 	private boolean naturalDrops;
+	private boolean hasNew = false;
 	
 	public static final int REMOVE_MODE = 0;
 	public static final int REPLACE_MODE = 1;
@@ -49,6 +50,7 @@ public class Stick {
 	}
 
 	public void addBlock(BlockState blockState) {
+		hasNew = true;
 		this.blocks.add(blockState);
 	}
 
@@ -192,6 +194,8 @@ public class Stick {
 		s.append("\n");
 		s.append("Drops: ");
 		s.append(isDrops());
+		s.append(" (dropping ");
+		s.append(doesNaturalDrops() ? "naturally)" : "anything)");
 		s.append("\n");
 		s.append("Undos: default: ");
 		s.append(getUndoAmount());
@@ -258,5 +262,13 @@ public class Stick {
 	
 	public boolean doesNaturalDrops() {
 		return naturalDrops;
+	}
+
+	public BlockState getNewBlockState() {
+		if (hasNew ) {
+			hasNew = false;
+			return getBlocks().lastElement();
+		}
+		return null;
 	}
 }

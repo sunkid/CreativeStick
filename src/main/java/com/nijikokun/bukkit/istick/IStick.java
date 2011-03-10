@@ -124,12 +124,12 @@ public class IStick extends BukkitPlugin {
 
 		case TOGGLE_DROPS:
 			stick.toggleDrops();
-			MessageUtils.send(player, getMessagePrefix(ChatColor.GREEN) + " Drops have been " + (stick.isDrops() ? "enabled" : "disabled") + ".");
+			MessageUtils.send(player, "Drops have been " + (stick.isDrops() ? "enabled" : "disabled") + ".");
 			break;
 
 		case TOGGLE:
 			stick.toggle();
-			MessageUtils.send(player, getMessagePrefix(ChatColor.GREEN) + " Has been " + (stick.isEnabled() ? "enabled" : "disabled") + ".");
+			MessageUtils.send(player, "Has been " + (stick.isEnabled() ? "enabled" : "disabled") + ".");
 			break;
 
 		case TOGGLE_MODE:
@@ -183,13 +183,13 @@ public class IStick extends BukkitPlugin {
 			try {
 				distance = Integer.valueOf(value).intValue();
 			} catch (NumberFormatException e) {
-				MessageUtils.send(player, getMessagePrefix(ChatColor.RED) + " Invalid distance given!");
+				MessageUtils.send(player, "Invalid distance given!");
 				return false;
 			}
 
 			if (distance != stick.getDistance()) {
 				stick.setDistance(distance);
-				MessageUtils.send(player, getMessagePrefix(ChatColor.GREEN) + " Distance changed to " + distance + ".");
+				MessageUtils.send(player, "Distance changed to " + distance + ".");
 			}
 
 			return true;
@@ -197,10 +197,10 @@ public class IStick extends BukkitPlugin {
 
 		if (param.equalsIgnoreCase("tool")) {
 			if (!stick.setTool(value)) {
-				MessageUtils.send(player, getMessagePrefix(ChatColor.RED) + " Bad tool name or id.");
+				MessageUtils.send(player, "Bad tool name or id.");
 				return false;
 			}
-			MessageUtils.send(player, getMessagePrefix(ChatColor.GREEN) + " Your tool has been changed to " + stick.getToolName() + ".");
+			MessageUtils.send(player, "Your tool has been changed to " + stick.getToolName() + ".");
 			return true;
 		}
 
@@ -209,9 +209,9 @@ public class IStick extends BukkitPlugin {
 			stick.doProtectBottom(protectBottom);
 
 			if (protectBottom)
-				MessageUtils.send(player, getMessagePrefix(ChatColor.GREEN) + " Your bottom is protected!");
+				MessageUtils.send(player, "Your bottom is protected!");
 			else
-				MessageUtils.send(player, getMessagePrefix(ChatColor.GREEN) + " Your bottom is no longer protected!");
+				MessageUtils.send(player, "Your bottom is no longer protected!");
 
 			return true;
 		}
@@ -221,9 +221,9 @@ public class IStick extends BukkitPlugin {
 			stick.setNaturalDrops(naturalDrops);
 
 			if (naturalDrops)
-				MessageUtils.send(player, getMessagePrefix(ChatColor.GREEN) + " You will now only receive naturally dropped items!");
+				MessageUtils.send(player, "You will now only receive naturally dropped items!");
 			else
-				MessageUtils.send(player, getMessagePrefix(ChatColor.GREEN) + " You will get what you hit!");
+				MessageUtils.send(player, "You will get what you hit!");
 
 			return true;
 		}
@@ -233,9 +233,9 @@ public class IStick extends BukkitPlugin {
 			stick.setRightClickSwitch(doRightClickSwitch);
 
 			if (doRightClickSwitch)
-				MessageUtils.send(player, getMessagePrefix(ChatColor.GREEN) + " Right-Clicking now selects!");
+				MessageUtils.send(player, "Right-Clicking now selects!");
 			else
-				MessageUtils.send(player, getMessagePrefix(ChatColor.GREEN) + " Right-Clicking no longer selects");
+				MessageUtils.send(player, "Right-Clicking no longer selects");
 
 			return true;
 		}
@@ -245,7 +245,7 @@ public class IStick extends BukkitPlugin {
 			try {
 				undo = Integer.valueOf(value).intValue();
 			} catch (NumberFormatException e) {
-				MessageUtils.send(player, getMessagePrefix(ChatColor.RED) + " Invalid number given!");
+				MessageUtils.send(player, "Invalid number given!");
 				return false;
 			}
 
@@ -258,9 +258,9 @@ public class IStick extends BukkitPlugin {
 			stick.setDebug(doDebug);
 
 			if (doDebug)
-				MessageUtils.send(player, getMessagePrefix(ChatColor.GREEN) + " debugging enabled!");
+				MessageUtils.send(player, "debugging enabled!");
 			else
-				MessageUtils.send(player, getMessagePrefix(ChatColor.GREEN) + " debugging disabled!");
+				MessageUtils.send(player, "debugging disabled!");
 
 			return true;
 		}
@@ -280,7 +280,7 @@ public class IStick extends BukkitPlugin {
 				try {
 					amount = Integer.valueOf(what).intValue();
 				} catch (NumberFormatException e) {
-					MessageUtils.send(player, getMessagePrefix(ChatColor.RED) + " Invalid amount, defaulting to " + amount + "!");
+					MessageUtils.send(player, "Invalid amount, defaulting to " + amount + "!");
 				}
 
 				if (amount <= 0)
@@ -292,18 +292,18 @@ public class IStick extends BukkitPlugin {
 			amount = stick.getBlocks().size();
 
 		if (amount == 0) {
-			MessageUtils.send(player, getMessagePrefix(ChatColor.RED) + " Nothing to undo!");
+			MessageUtils.send(player, "Nothing to undo!");
 		} else {
 			int blocksRemoved = doUndo(player, amount);
 
 			if (blocksRemoved > 0) {
 				if (all)
-					MessageUtils.send(player, getMessagePrefix(ChatColor.RED) + " All edits in this session were reverted!");
+					MessageUtils.send(player, "All edits in this session were reverted!");
 				else
-					MessageUtils.send(player, getMessagePrefix(ChatColor.RED) + " Last " + blocksRemoved + " edits have been reverted!");
+					MessageUtils.send(player, "Last " + blocksRemoved + " edits have been reverted!");
 
 			} else if (blocksRemoved < 0) {
-				MessageUtils.send(player, getMessagePrefix(ChatColor.RED) + " Access denied!");
+				MessageUtils.send(player, "Access denied!");
 			}
 		}
 	}
@@ -356,7 +356,7 @@ public class IStick extends BukkitPlugin {
 			return false;
 
 		if (stick.getItem() == null) {
-			MessageUtils.send(player, getMessagePrefix(ChatColor.RED) + " Invalid item usage.");
+			MessageUtils.send(player, "Invalid item usage.");
 			return false;
 		} else {
 			stick.setMode(2);
@@ -420,14 +420,14 @@ public class IStick extends BukkitPlugin {
 				}
 			
 			if (items.size() != 1) {
-				MessageUtils.send(player, getMessagePrefix(ChatColor.RED) + " Invalid item specification.");
+				MessageUtils.send(player, "Invalid item specification.");
 				String match;
 				if (items.size() > 1)
 					match = MaterialUtils.getFormattedNameList(items).toString();
 				else
 					match = "no known items.";
 
-				MessageUtils.send(player, getMessagePrefix(ChatColor.RED) + "'" + item + "' matches " + match);
+				MessageUtils.send(player, "'" + item + "' matches " + match);
 				return false;
 			}
 			
@@ -437,8 +437,8 @@ public class IStick extends BukkitPlugin {
 		return true;
 	}
 
-	private void sendToggleMessage(Player player, Stick stick) {
-		StringBuilder msg = new StringBuilder(getMessagePrefix(ChatColor.GREEN)).append(" You are now ").append(ChatColor.RED);
+	protected void sendToggleMessage(Player player, Stick stick) {
+		StringBuilder msg = new StringBuilder().append("You are now ").append(ChatColor.RED);
 		msg.append(stick.getModeAsString()).append(ChatColor.WHITE);
 		if (stick.getMode() != Stick.REMOVE_MODE)
 			msg.append(" with ").append(stick.getItemName()).append(".");

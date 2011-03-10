@@ -77,11 +77,12 @@ public class UndoListener extends BlockListener {
 	
 	private void giveItems(Player player) {
 		Stick stick = plugin.getStick(player);
-		
-		if (stick.getMode() == Stick.BUILD_MODE)
+
+		BlockState b = stick.getNewBlockState(); 
+		if (b == null) {
 			return;
+		}
 		
-		BlockState b = stick.getBlocks().lastElement(); 
 		List<ItemStack> items;
 		if (stick.isDrops()) {
 			if (stick.doesNaturalDrops()) {

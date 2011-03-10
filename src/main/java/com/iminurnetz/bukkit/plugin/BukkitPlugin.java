@@ -16,7 +16,6 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import com.iminurnetz.bukkit.plugin.util.MessageUtils;
 import com.iminurnetz.bukkit.plugin.util.PluginLogger;
-import com.nijikokun.bukkit.istick.IStick;
 
 public abstract class BukkitPlugin extends JavaPlugin {
 	protected Map<String, Object> root;

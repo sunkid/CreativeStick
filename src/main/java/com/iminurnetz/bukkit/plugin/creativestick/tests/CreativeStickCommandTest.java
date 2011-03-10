@@ -23,9 +23,9 @@
 
 package com.iminurnetz.bukkit.plugin.creativestick.tests;
 
-import com.iminurnetz.bukkit.plugin.creativestick.CreativeStickCommand;
-
 import junit.framework.TestCase;
+
+import com.iminurnetz.bukkit.plugin.creativestick.CreativeStickCommand;
 
 public class CreativeStickCommandTest extends TestCase {
 	public void testToString() {

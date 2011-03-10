@@ -26,11 +26,11 @@ package com.iminurnetz.bukkit.plugin.creativestick.tests;
 import java.io.File;
 import java.net.URL;
 
+import junit.framework.TestCase;
+
 import org.bukkit.util.config.Configuration;
 
 import com.iminurnetz.bukkit.plugin.creativestick.ConfigurationService;
-
-import junit.framework.TestCase;
 
 public class ConfigurationServiceTest extends TestCase {
 	public void testVersion() {

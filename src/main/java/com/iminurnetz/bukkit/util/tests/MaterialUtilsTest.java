@@ -28,11 +28,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.inventory.ItemStack;
 
 import com.iminurnetz.bukkit.util.MaterialUtils;
-
-import junit.framework.TestCase;
 
 public class MaterialUtilsTest extends TestCase {
 
@@ -80,12 +83,22 @@ public class MaterialUtilsTest extends TestCase {
 		}
 	}
 	
-	public void testGetFormattedName() {
-		for (Material m : Material.values()) {
-			System.out.println(MaterialUtils.getFormattedName(m, 2));
-		}
+	public void testShortCuts() {
+		assertTrue("grass is grass", MaterialUtils.isSameMaterial(Material.GRASS, Material.GRASS));
+		assertTrue("Grass is dirt", MaterialUtils.isDirt(Material.GRASS));
 	}
 	
+	public void notestReplaceDropped() {
+		for (Material m : Material.values()) {
+			System.out.print(MaterialUtils.getFormattedName(m) + " => ");
+			List<ItemStack> items = MaterialUtils.getDroppedMaterial(m, (byte) 7);
+			for (ItemStack i : items) {
+				System.out.print(i.getAmount() + " x " + MaterialUtils.getFormattedName(i.getType()));
+			}
+			
+			System.out.print("\n");
+		}
+	}
 	private List<Material> getSorted(List<Material> list) {
 		ArrayList<Material> result = new ArrayList<Material>();
 		result.addAll(list);

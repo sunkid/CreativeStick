@@ -46,6 +46,16 @@
 	</target>
 
 	<target name="minor-version" depends="clean, compile">
+		<copy file="${resources}/README.template" tofile="${release}/README.txt" overwrite="true">
+			<filterset>
+				<filtersfile file="${resources}/version.properties" />
+			</filterset>
+		</copy>
+		<copy file="${resources}/CHANGELOG.template" tofile="${release}/CHANGELOG.txt" overwrite="true">
+			<filterset>
+				<filtersfile file="${resources}/version.properties" />
+			</filterset>
+		</copy>
 		<propertyfile file="${resources}/version.properties" comment="Build version info">
 			<entry key="build_date" type="date" value="now" />
 			<entry key="minor_version" default="0" type="int" operation="+" value="1" />
@@ -84,16 +94,6 @@
 		<antcall target="clean" />
 		<antcall target="dist" />
 		<copy file="${dist}/${project}-${DSTAMP}.jar" tofile="${release}/${project}.jar" />
-		<copy file="${resources}/README.template" tofile="${resources}/README.txt" overwrite="true">
-			<filterset>
-				<filtersfile file="${resources}/version.properties" />
-			</filterset>
-		</copy>
-		<copy file="${resources}/CHANGELOG.template" tofile="${resources}/CHANGELOG.txt" overwrite="true">
-			<filterset>
-				<filtersfile file="${resources}/version.properties" />
-			</filterset>
-		</copy>
 		<zip destfile="${release}/${project}-${version}.${minor_version}.zip"
 		     basedir="${release}/" excludes="**/*.zip" />
 		<exec executable="github-upload">

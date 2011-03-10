@@ -27,7 +27,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
-import com.iminurnetz.bukkit.plugin.BukkitPlugin;
 import com.iminurnetz.util.EnumUtil;
 import com.nijikokun.bukkit.istick.IStick;
 

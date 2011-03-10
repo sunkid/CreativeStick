@@ -1,6 +1,6 @@
 Listed below are released versions and cumulative changes between them
 
-@version@.@minor_version@
+0.4.25
 
 * fixed the handling of water
 * fixed 'creativestick.*' permission for reals

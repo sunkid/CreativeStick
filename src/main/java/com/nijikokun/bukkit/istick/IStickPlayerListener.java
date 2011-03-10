@@ -1,6 +1,5 @@
 package com.nijikokun.bukkit.istick;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -14,8 +13,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.Event.Type;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerItemEvent;
 import org.bukkit.event.player.PlayerListener;
@@ -138,13 +137,13 @@ public class IStickPlayerListener extends PlayerListener {
 
 			plugin.getServer().getPluginManager().callEvent(bpe);
 
-			Material item = targetedBlock.getType();
+			Material item = state.getType();
 			item = MaterialUtils.getPlaceableMaterial(item);
 
 			if (item != null) {
 				if (item != stick.getItem() && stick.doRightClickSwitch()) {
 					stick.setItem(item);
-					MessageUtils.send(player, plugin.getMessagePrefix(ChatColor.GREEN) + " You are now working with " + stick.getItemName());
+					plugin.sendToggleMessage(player, stick);
 				}
 			}
 
