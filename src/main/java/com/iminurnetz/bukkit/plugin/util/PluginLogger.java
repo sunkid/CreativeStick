@@ -22,7 +22,7 @@ public class PluginLogger {
 	
 	private void init() {
 		server = plugin.getServer();
-		prefix = "[" + plugin.getName() + " " + plugin.getVersion() + "] ";
+		prefix = plugin.getFullMessagePrefix();
 
 		if (server != null)
 			logger = server.getLogger();
