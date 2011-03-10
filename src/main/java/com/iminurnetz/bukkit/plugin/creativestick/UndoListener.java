@@ -23,16 +23,21 @@
 
 package com.iminurnetz.bukkit.plugin.creativestick;
 
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 
+import com.iminurnetz.bukkit.util.MaterialUtils;
 import com.nijikokun.bukkit.istick.IStick;
+import com.nijikokun.bukkit.istick.Stick;
 
 public class UndoListener extends BlockListener {
 
@@ -64,7 +69,40 @@ public class UndoListener extends BlockListener {
 		if (event.isCancelled()) {
 			plugin.doUndo(player, 1);
 			if (plugin.isDebug(player))
-				plugin.getLogger().log("undid last action of " + player.getDisplayName());
-		}		
+				plugin.log("undid last action of " + player.getDisplayName());
+		} else {
+			giveItems(player);
+		}
 	}
+	
+	private void giveItems(Player player) {
+		Stick stick = plugin.getStick(player);
+		
+		if (stick.getMode() == Stick.BUILD_MODE)
+			return;
+		
+		BlockState b = stick.getBlocks().lastElement(); 
+		List<ItemStack> items;
+		if (stick.isDrops()) {
+			if (stick.doesNaturalDrops()) {
+				items = MaterialUtils.getDroppedMaterial(b);
+			} else {
+				items = new ArrayList<ItemStack>();
+				items.add(new ItemStack(b.getTypeId(), 1));
+			}
+			
+			for (ItemStack is : items) {
+				if (plugin.isDebug(player)) {
+					plugin.log(player.getName() + " received " + is.getAmount() + " "
+							+ MaterialUtils.getFormattedName(is.getType(), is.getAmount()));
+				}
+				if (player.getInventory().firstEmpty() == -1)
+					player.getWorld().dropItemNaturally(player.getLocation(), is);
+				else {
+					player.getInventory().addItem(is);
+				}
+			}
+		}
+	}
+
 }

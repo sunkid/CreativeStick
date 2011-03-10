@@ -23,16 +23,15 @@
 
 package com.iminurnetz.bukkit.plugin.creativestick;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.iminurnetz.bukkit.permissions.DefaultPermissions;
 import com.iminurnetz.bukkit.permissions.PermissionHandler;
 import com.iminurnetz.bukkit.permissions.PermissionHandlerService;
 import com.iminurnetz.bukkit.plugin.BukkitPlugin;
-import com.nijikokun.bukkit.istick.Messaging;
 
 public class CSPermissionHandler implements PermissionHandler {
 	
@@ -40,13 +39,11 @@ public class CSPermissionHandler implements PermissionHandler {
 	public static final String CAN_CONFIGURE_PERMISSION = "creativestick.config";
 	public static final String CAN_DO_EVERYTHING = "creativestick.*";
 	
-	public static final String NOT_ALLOWED = Messaging.getMsgFront(ChatColor.RED) + " is not available for you.";
-	
-	private static HashMap<String, String> permissions = new HashMap<String, String>();
+	private static HashMap<String, ArrayList<String>> permissions = new HashMap<String, ArrayList<String>>();
 
-	private static PermissionHandler permissionHandler;
-	private static boolean useOwnPermissions = false;
-	private static boolean enableOps = ConfigurationService.ALLOW_OPS;
+	private PermissionHandler permissionHandler;
+	private boolean useOwnPermissions = false;
+	private boolean enableOps = ConfigurationService.ALLOW_OPS;
 
 	protected CSPermissionHandler(BukkitPlugin plugin, boolean enableOps) {
 		permissionHandler = PermissionHandlerService.getHandler(plugin);
@@ -56,45 +53,39 @@ public class CSPermissionHandler implements PermissionHandler {
 		}
 	}
 	
-	protected static boolean usesOwnPermissions() {
+	protected boolean usesOwnPermissions() {
 		return useOwnPermissions;
 	}
 	
-	protected static void add(String controller, String groups) {
-		permissions.put(controller, groups);
+	protected void addPermission(String player, String permission) {
+		ArrayList<String> perms = permissions.get(player);
+		if (perms == null)
+			perms = new ArrayList<String>();
+		
+		if (permission.equals(CAN_DO_EVERYTHING))
+			perms.removeAll(null);
+		
+		if (!perms.contains(permission) && !perms.contains(CAN_DO_EVERYTHING))
+			perms.add(permission);
+		
+		permissions.put(player, perms);
 	}
 
-	private static boolean permission(String controller, Player player) {
+	public boolean permission(Player player, String permission) {
+		String name = player.getName();
 		
-		if (!permissions.containsKey(controller)) {
+		if (!permissions.containsKey(name)) {
 			return false;
 		}
 
-		String groups = (String) permissions.get(controller);
-
-		if (!groups.equals("*")) {
-			String[] groupies = groups.split(",");
-
-			for (String group : groupies) {
-				if (player.getName().equals(group)) {
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		return true;
+		return permissions.get(name).contains(permission) || permissions.get(name).contains(CAN_DO_EVERYTHING);
 	}
 
 	public boolean hasPermission(Player player, String permission) {
 		if (enableOps && player.isOp())
 			return true;
 		
-		if (CSPermissionHandler.useOwnPermissions)
-			return CSPermissionHandler.permission(permission, player);
-		else
-			return permissionHandler.hasPermission(player, permission);
+		return permissionHandler.hasPermission(player, permission);
 	}
 
 	public boolean canUse(Player player) {

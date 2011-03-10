@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.ConfigurationException;
 import org.yaml.snakeyaml.Yaml;
@@ -13,7 +14,9 @@ import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.reader.UnicodeReader;
 import org.yaml.snakeyaml.representer.Representer;
 
+import com.iminurnetz.bukkit.plugin.util.MessageUtils;
 import com.iminurnetz.bukkit.plugin.util.PluginLogger;
+import com.nijikokun.bukkit.istick.IStick;
 
 public abstract class BukkitPlugin extends JavaPlugin {
 	protected Map<String, Object> root;
@@ -50,6 +53,16 @@ public abstract class BukkitPlugin extends JavaPlugin {
 		return logger;
 	}
 
+	// simple shortcut
+	public void log(String msg) {
+		logger.log(msg);
+	}
+
+	// simple shortcut
+	public void log(Level level, String msg) {
+		logger.log(level, msg);
+	}
+
 	public String getName() {
 		try {
 			return root.get("name").toString();
@@ -80,6 +93,22 @@ public abstract class BukkitPlugin extends JavaPlugin {
 			throw new ConfigurationException(
 					"Root document must be an key-value structure");
 		}
+	}
+
+	public String getFullMessagePrefix() {
+		return getFullMessagePrefix(ChatColor.WHITE);
+	}
+	
+	public String getFullMessagePrefix(ChatColor color) {
+		return MessageUtils.colorize(color, "[" + getName() + " " + getVersion() + "] ");
+	}
+	
+	public String getMessagePrefix() {
+		return "[" + getName() + "] ";
+	}
+	
+	public String getMessagePrefix(ChatColor color) {
+		return MessageUtils.colorize(color, getMessagePrefix());
 	}
 
 }

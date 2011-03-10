@@ -80,6 +80,12 @@ public class MaterialUtilsTest extends TestCase {
 		}
 	}
 	
+	public void testGetFormattedName() {
+		for (Material m : Material.values()) {
+			System.out.println(MaterialUtils.getFormattedName(m, 2));
+		}
+	}
+	
 	private List<Material> getSorted(List<Material> list) {
 		ArrayList<Material> result = new ArrayList<Material>();
 		result.addAll(list);

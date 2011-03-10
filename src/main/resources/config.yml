@@ -8,7 +8,7 @@
 # CHANGE THE VERSION IN YOUR config.yml TO THE ONE BELOW.
 settings:
     # version of the last update of the config file
-    version: 0.4.15
+    version: 0.4.22
 
     # this will allow all ops by default to use the plugin
     # NOTE: it overrides GroupManager or Permissions system! (NEW)
@@ -40,6 +40,9 @@ settings:
         
         # debug mode
         debug: false
+        
+        # whether to receive only items that are naturally dropped
+        natural-drops: false
 
     # if you really want to use the old iStick configuration files, uncomment the
     # following parameter

@@ -49,11 +49,10 @@ public class ConfigurationService {
 
 	private Configuration config;
 	private File configFile;
-	private PluginLogger logger;
 	private BukkitPlugin plugin;
 	
 	// used to check the config file for updates
-	public static final String LAST_CHANGED_IN_VERSION = "0.4.15";
+	public static final String LAST_CHANGED_IN_VERSION = "0.4.22";
 	
 	// TODO convert to enums
 	// global settings
@@ -71,6 +70,7 @@ public class ConfigurationService {
 	public static final Material TOOL = Material.STICK;
 	public static final boolean PROTECT_BOTTOM = true;
 	public static final boolean DEBUG = false;
+	public static final boolean NATURAL_DROPS = false;
 	
 	// permissions
 	public static final String PERMISSIONS_TAG = "permissions";
@@ -78,9 +78,8 @@ public class ConfigurationService {
 	public ConfigurationService(BukkitPlugin plugin) {
 		this.configFile = new File(plugin.getDataFolder(), "config.yml");		
 		this.config = plugin.getConfiguration();
-		load();
-		this.logger = plugin.getLogger();
 		this.plugin = plugin;
+		load();
 	}
 	
 	private void load() {
@@ -99,12 +98,12 @@ public class ConfigurationService {
 			}
 			
 			if (oldDir.exists()) {
-				logger.log("Migrating " + oldDir.getAbsolutePath() + " data directory");		
+				plugin.log("Migrating " + oldDir.getAbsolutePath() + " data directory");		
 				if (oldDir.renameTo(dir))
-					logger.log("copied to " + dir.getAbsolutePath());
+					plugin.log("copied to " + dir.getAbsolutePath());
 				oldConfigFound = true;
 			} else if (!dir.exists()){
-				// logger.log(oldDir.getPath() + " not present");
+				// plugin.log(oldDir.getPath() + " not present");
 				dir.mkdirs();
 			}			
 		}
@@ -123,7 +122,7 @@ public class ConfigurationService {
 			generateDefaultConfig(dir);
 		} else // check if there was an update to the config file/parameters
 		if (!config.getString(SETTINGS_TAG + ".version", "").equals(LAST_CHANGED_IN_VERSION)) {
-			logger.log(Level.WARNING, "Your configuration file is outdated, please read config-new.yml");
+			plugin.log(Level.WARNING, "Your configuration file is outdated, please read config-new.yml");
 			URL shipped = getClass().getResource("/config.yml");
 			byte[] buf = new byte[1024];
 			int len;
@@ -136,7 +135,7 @@ public class ConfigurationService {
 				in.close();
 				out.close();
 			} catch (IOException e) {
-				logger.getLogger().log(Level.SEVERE, "Cannot generate config-new.file file", e);
+				plugin.getLogger().getLogger().log(Level.SEVERE, "Cannot generate config-new.file file", e);
 			}
 		}
 		
@@ -148,20 +147,20 @@ public class ConfigurationService {
 		
 
 		if (config.getBoolean(SETTINGS_TAG + ".ignore-yml", false)) {
-			logger.log(Level.WARNING, "ignoring new configuration file; please consider migrating");
+			plugin.log(Level.WARNING, "ignoring new configuration file; please consider migrating");
 		}
 	}
 	
 	public CSPermissionHandler getPermissionHandler() {
 		CSPermissionHandler h = new CSPermissionHandler(plugin, config.getBoolean(SETTINGS_TAG + ".allow-ops", ALLOW_OPS));
 		
-		if (CSPermissionHandler.usesOwnPermissions()) {
+		if (h.usesOwnPermissions()) {
 			List<String> users = config.getKeys(PERMISSIONS_TAG);
 			if (users != null) {
 				// a map of a List of users for each permission
 				Map<String, String> perms = new HashMap<String,String>();
 				for (String user : users) {
-					logger.log("setting permissions for " + user);
+					plugin.log("setting permissions for " + user);
 					List<String> confPerms = config.getStringList(PERMISSIONS_TAG + "." + user, new ArrayList<String>());
 					for (String p : confPerms) {
 						String u = perms.get(p);
@@ -174,7 +173,7 @@ public class ConfigurationService {
 				}
 				
 				for (String p : perms.keySet()) {
-					CSPermissionHandler.add(p, perms.get(p));
+					h.addPermission(p, perms.get(p));
 				}
 			}
 			
@@ -210,7 +209,7 @@ public class ConfigurationService {
 			
 			tmpFile.delete();
 		} catch (IOException e) {
-			logger.getLogger().log(Level.SEVERE, "Cannot generate config file", e);
+			plugin.getLogger().getLogger().log(Level.SEVERE, "Cannot generate config file", e);
 		}	
 	}
 
@@ -224,7 +223,7 @@ public class ConfigurationService {
 		try {
 			pprop = new PersistentProperty(dir, "iStick.permissions", false);
 			oldConfigFound = true;
-			logger.log("Loading old permission file.");
+			plugin.log("Loading old permission file.");
 		} catch (IOException e) {
 			// ignored!
 		}
@@ -238,7 +237,7 @@ public class ConfigurationService {
 					ArrayList<String> p = new ArrayList<String>();
 					p.add(CSPermissionHandler.CAN_USE_PERMISSION);
 					config.setProperty(PERMISSIONS_TAG + "." + u, p);
-					logger.log("set permission for " + u + " to " + config.getList(PERMISSIONS_TAG + "." + u).get(0));
+					plugin.log("set permission for " + u + " to " + config.getList(PERMISSIONS_TAG + "." + u).get(0));
 				}
 			}
 		}
@@ -276,5 +275,9 @@ public class ConfigurationService {
 
 	public boolean isDebug() {
 		return config.getBoolean(USER_SETTINGS_TAG + ".debug", DEBUG);
+	}
+
+	public boolean doesNaturalDrops() {
+		return config.getBoolean(USER_SETTINGS_TAG + ".natural-drops", NATURAL_DROPS);
 	}
 }

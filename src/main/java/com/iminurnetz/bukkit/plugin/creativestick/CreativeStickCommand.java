@@ -27,6 +27,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
+import com.iminurnetz.bukkit.plugin.BukkitPlugin;
 import com.iminurnetz.util.EnumUtil;
 import com.nijikokun.bukkit.istick.IStick;
 
@@ -145,7 +146,7 @@ public enum CreativeStickCommand {
 		}
 		
 		if (help.length() == 0)
-			help.append(CSPermissionHandler.NOT_ALLOWED);
+			help.append("This command is not available for you.");
 		
 		return help.toString();
 	}

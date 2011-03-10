@@ -26,9 +26,14 @@ package com.iminurnetz.bukkit.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.inventory.ItemStack;
 
 import com.iminurnetz.util.StringUtils;
 
@@ -125,6 +130,81 @@ public class MaterialUtils {
 			Material.BONE,
 			Material.SUGAR
 				);
+
+	public static Map<Material, String> pluralWords = new HashMap<Material, String>();
+	static {
+		for (Material m : Material.values()) {
+			if (m.name().endsWith("S")) {
+				pluralWords.put(m, getFormattedName(m));
+			} else if (isOre(m)) {
+				pluralWords.put(m, "blocks of " + getFormattedName(m));
+			} else {
+				pluralWords.put(m, getFormattedName(m) + "s");
+			}
+		}
+		
+		// leave as is
+		for (Material m : Arrays.asList(
+				Material.AIR,
+				Material.WATER,
+				Material.STATIONARY_WATER,
+				Material.LAVA,
+				Material.STATIONARY_LAVA,
+				Material.CROPS,
+				Material.COOKED_FISH,
+				Material.RAW_FISH
+			)) {
+			pluralWords.put(m, getFormattedName(m));
+		}
+		
+		for (Material m : Arrays.asList(
+				Material.DIRT,
+				Material.WOOD,
+				Material.BEDROCK,
+				Material.SAND,
+				Material.GLASS,
+				Material.WOOL,
+				Material.TNT,
+				Material.GRAVEL,
+				Material.OBSIDIAN,
+				Material.SOIL,
+				Material.CLAY,
+				Material.NETHERRACK,
+				Material.SNOW,
+				Material.ICE,
+				Material.SOUL_SAND,
+				Material.SULPHUR,
+				Material.GLOWSTONE_DUST
+			)) {
+			pluralWords.put(m, "blocks of " + getFormattedName(m));
+		}
+		
+		for (Material m : Arrays.asList(
+				Material.TORCH,
+				Material.WORKBENCH,
+				Material.JUKEBOX,
+				Material.COMPASS,
+				Material.WATCH)) {
+			pluralWords.put(m, getFormattedName(m) + "es");
+		}
+		
+		for (Material m : Arrays.asList(
+				Material.PORK,
+				Material.GRILLED_PORK,
+				Material.PAPER,
+				Material.FLINT_AND_STEEL,
+				Material.LEATHER)) {
+			pluralWords.put(m, "pieces of " + getFormattedName(m));
+		}		
+		
+		pluralWords.put(Material.BOOKSHELF, "bookshelves");
+		pluralWords.put(Material.SUGAR, "sugar cubes");
+		pluralWords.put(Material.CACTUS, "cacti");
+		pluralWords.put(Material.REDSTONE_TORCH_OFF, "redstone torches (off)");
+		pluralWords.put(Material.REDSTONE_TORCH_ON, "redstone torches (on)");
+		pluralWords.put(Material.DIODE_BLOCK_OFF, "diode blocks (off)");
+		pluralWords.put(Material.DIODE_BLOCK_ON, "diode blocks (on)");
+	}
 	
 	static {
 		for (Material m : Material.values())
@@ -195,52 +275,204 @@ public class MaterialUtils {
 		return Arrays.asList(Material.values());
 	}
 
+	/**
+	 * Check if the first material is "the same" as any of the other materials by comparing
+	 * their names only.
+	 * @param m1 the Material to check
+	 * @param m2 the Material enum members to check against
+	 * @return true if the name of any of the m2 Material enum members matches the name of m1
+	 */
+	public static boolean isSameMaterial(Material m1, Material... m2) {
+		for (Material m : m2) {
+			if (m1.name().equals(m)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static boolean isWater(Material m) {
-		return m.equals(Material.WATER) || m.equals(Material.STATIONARY_WATER);
+		return isSameMaterial(m, Material.WATER, Material.STATIONARY_WATER);
 	}
 
 	public static boolean isLava(Material m) {
-		return m.equals(Material.LAVA) || m.equals(Material.STATIONARY_LAVA);
+		return isSameMaterial(m, Material.LAVA, Material.STATIONARY_LAVA);
 	}
 
 	public static boolean isWoodenDoor(Material m) {
-		return m.equals(Material.WOOD_DOOR) || m.equals(Material.WOODEN_DOOR);
+		return isSameMaterial(m, Material.WOOD_DOOR, Material.WOODEN_DOOR);
 	}
 
 	public static boolean isIronDoor(Material m) {
-		return m.equals(Material.IRON_DOOR) || m.equals(Material.IRON_DOOR_BLOCK);
+		return isSameMaterial(m, Material.IRON_DOOR, Material.IRON_DOOR_BLOCK);
 	}
 
 	public static boolean isMineCart(Material m) {
-		return m.equals(Material.STORAGE_MINECART) || m.equals(Material.POWERED_MINECART) || m.equals(Material.MINECART);
+		return isSameMaterial(m, Material.STORAGE_MINECART, Material.POWERED_MINECART, Material.MINECART);
 	}
 
 	public static boolean isSign(Material m) {
-		return m.equals(Material.SIGN_POST) || m.equals(Material.WALL_SIGN) || m.equals(Material.SIGN);
+		return isSameMaterial(m, Material.SIGN_POST, Material.WALL_SIGN, Material.SIGN);
+	}
+	
+	public static boolean isBed(Material m) {
+		return isSameMaterial(m, Material.BED, Material.BED_BLOCK);
+	}
+	
+	public static boolean isDiode(Material m) {
+		return isSameMaterial(m, Material.DIODE, Material.DIODE_BLOCK_ON, Material.DIODE_BLOCK_OFF);
+	}
+	
+	public static boolean isSugar(Material m) {
+		return isSameMaterial(m, Material.SUGAR, Material.SUGAR_CANE, Material.SUGAR_CANE_BLOCK);
+	}
+	
+	public static boolean isCoal(Material m) {
+		return isSameMaterial(m, Material.COAL, Material.COAL_ORE);
+	}
+	
+	public static boolean isGold(Material m) {
+		return isSameMaterial(m, Material.GOLD_BLOCK, Material.GOLD_INGOT, Material.GOLD_ORE);
+	}
+	
+	public static boolean isIron(Material m) {
+		return isSameMaterial(m, Material.IRON_BLOCK, Material.IRON_INGOT, Material.IRON_ORE);
+	}
+	
+	public static boolean isDiamond(Material m) {
+		return isSameMaterial(m, Material.DIAMOND, Material.DIAMOND_BLOCK, Material.DIAMOND_ORE);
+	}
+	
+	public static boolean isRedstone(Material m) {
+		return isSameMaterial(m, Material.REDSTONE, Material.REDSTONE_ORE, Material.GLOWING_REDSTONE_ORE);
 	}
 
-	public static boolean isWater(int id) {
-		return isWater(Material.getMaterial(id));
+	public static boolean isSnow(Material m) {
+		return isSameMaterial(m, Material.SNOW_BALL, Material.SNOW_BLOCK, Material.SNOW);
 	}
-
-	public static boolean isLava(int id) {
-		return isLava(Material.getMaterial(id));
+	
+	public static boolean isClay(Material m) {
+		return isSameMaterial(m, Material.CLAY, Material.CLAY_BALL);		
 	}
-
-	public static boolean isWoodenDoor(int id) {
-		return isWoodenDoor(Material.getMaterial(id));
+	
+	public static boolean isBrick(Material m) {
+		return isSameMaterial(m, Material.CLAY_BRICK, Material.BRICK);
 	}
-
-	public static boolean isIronDoor(int id) {
-		return isIronDoor(Material.getMaterial(id));
+	
+	public static boolean isGlowstone(Material m) {
+		return isSameMaterial(m, Material.GLOWSTONE, Material.GLOWSTONE_DUST);
 	}
-
-	public static boolean isMineCart(int id) {
-		return isMineCart(Material.getMaterial(id));
+	
+	public static boolean isDirt(Material m) {
+		return isSameMaterial(m, Material.GRASS, Material.DIRT, Material.SOIL);
 	}
+	
+	public static boolean isFurnace(Material m) {
+		return isSameMaterial(m, Material.FURNACE, Material.BURNING_FURNACE);
+	}
+	
+	public static boolean isDoor(Material m) {
+		return isSameMaterial(m, Material.WOODEN_DOOR, Material.IRON_DOOR, Material.WOOD_DOOR, Material.IRON_DOOR_BLOCK);
+	}
+	
+	public static boolean isOre(Material m) {
+		return m.name().endsWith("_ORE");
+	}
+	
+	public static boolean isBlockBlock(Material m) {
+		return m.name().endsWith("_BLOCK");
+	}
+	
+	public static boolean isStep(Material m) {
+		return m.name().endsWith("STEP");
+	}
+	
+	/**
+	 * Retrieves the items dropped when mining a block with this particular state.
+	 * @param state the state of the Block that was mined
+	 * @return a list of ItemStacks containing all items dropped
+	 */
+	public static List<ItemStack> getDroppedMaterial(BlockState state) {
+		Material m = state.getType();
+		byte originalData = state.getRawData();
+		
+		int n = 0;
+		Material dm = Material.AIR;
+		byte data = (byte) 0;
 
-	public static boolean isSign(int id) {
-		return isSign(Material.getMaterial(id));
+		List<ItemStack> items = new ArrayList<ItemStack>();
+		
+		Random generator = new Random();			
+
+		if (isSameMaterial(m, Material.STONE, Material.COBBLESTONE)) {
+			dm = Material.COBBLESTONE;
+		} else if (isOre(m)) {
+			if (isSameMaterial(m, Material.LAPIS_ORE)) {
+				n = generator.nextInt(5) + 4;
+				dm = Material.INK_SACK;
+				data = (byte) 4;
+			} else if (isRedstone(m)) {
+				n = generator.nextInt(2) + 4;
+				dm = Material.REDSTONE;
+			} else if (isSameMaterial(m, Material.COAL_ORE, Material.DIAMOND_ORE)) {
+				dm = MaterialUtils.getMaterial(m.name().substring(0, m.name().length() - 4));
+			} else {
+				n = 1;
+				dm = m;
+			}
+		} else if (isDirt(m)) {
+			n = 1;
+			dm = Material.DIRT;
+		} else if (isBlockBlock(m) && !isBed(m)) {
+			n = 1;
+			if (isSameMaterial(m, Material.SNOW_BLOCK)) {
+				n = 4;
+				dm = Material.SNOW_BALL;
+			} else if (isSameMaterial(m, Material.SUGAR_CANE_BLOCK)) {
+				dm = Material.SUGAR_CANE; 
+			} else {
+				dm = m;
+			}
+		} else if (isBed(m)) {
+			dm = Material.BED_BLOCK;
+			n = 1;
+		} else if (isStep(m)) {
+			dm = Material.STEP;
+			n = isSameMaterial(m, Material.STEP) ? 1 : 2;
+		} else if (isSameMaterial(m, Material.REDSTONE_WIRE)) {
+			dm = Material.REDSTONE;
+			n = 1;
+		} else if (isSameMaterial(m, Material.CROPS) && originalData == (byte) 7) {
+			n = generator.nextInt(4);
+			items.add(new ItemStack(Material.SEEDS, n));
+			
+			dm = Material.WHEAT;
+			n = 1;
+		} else if (isFurnace(m)) {
+			dm = Material.FURNACE;
+			n = 1;
+		} else if (isSign(m)) {
+			dm = Material.SIGN;
+			n = 1;
+		} else if (isDoor(m)) {
+			dm = isSameMaterial(Material.WOODEN_DOOR) ? Material.WOOD_DOOR : Material.IRON_DOOR;
+			n = 1;
+		} else if (isSameMaterial(Material.REDSTONE_TORCH_OFF)) {
+			dm = Material.REDSTONE_TORCH_ON;
+			n = 1;
+		} else if (isSameMaterial(Material.SNOW)) {
+			dm = Material.SNOW_BALL;
+			n = 1;
+		} else if (isDiode(m)) {
+			dm = Material.DIODE;
+			n = 1;
+		}
+
+		if (n != 0) {
+			items.add(new ItemStack(dm, n, new Byte(data)));
+		}
+		
+		return items;
 	}
 
 	public static Material getPlaceableMaterial(int id) {
@@ -248,6 +480,9 @@ public class MaterialUtils {
 	}
 
 	public static Material getPlaceableMaterial(Material m) {
+		if (m.isBlock())
+			return m;
+		
 		if (isWater(m)) {
 			return Material.WATER;
 		}
@@ -266,6 +501,58 @@ public class MaterialUtils {
 
 		if (isSign(m)) {
 			return Material.SIGN;
+		}
+		
+		if (isSameMaterial(m, Material.FLINT_AND_STEEL)) {
+			return Material.FIRE;
+		}
+		
+		if (isBed(m)) {
+			return Material.BED_BLOCK;
+		}
+		
+		if (isDiode(m)) {
+			return Material.DIODE_BLOCK_OFF;
+		}
+		
+		if (isSugar(m)) {
+			return Material.SUGAR_CANE_BLOCK;
+		}
+		
+		if (isCoal(m)) {
+			return Material.COAL_ORE;
+		}
+		
+		if (isDiamond(m)) {
+			return Material.DIAMOND_ORE;
+		}
+		
+		if (isGold(m)) {
+			return Material.GOLD_ORE;
+		}
+		
+		if (isIron(m)) {
+			return Material.IRON_ORE;
+		}
+		
+		if (isRedstone(m)) {
+			return Material.REDSTONE_ORE;
+		}
+		
+		if (isGlowstone(m)) {
+			return Material.GLOWSTONE;
+		}
+		
+		if (isSnow(m)) {
+			return Material.SNOW;
+		}
+		
+		if (isClay(m)) {
+			return Material.CLAY;
+		}
+		
+		if (isBrick(m)) {
+			return Material.BRICK;
 		}
 
 		return m;
@@ -300,7 +587,17 @@ public class MaterialUtils {
 	}
 
 	public static String getFormattedName(Material m) {
-		return StringUtils.constantCaseToEnglish(m.name());
+		String result = StringUtils.constantCaseToEnglish(m.name());
+		result.replaceAll("(on|off)$", "($1)");
+		return result;
+	}
+
+	public static String getFormattedName(Material m, int amount) {
+		if (amount > 1) {
+			return pluralWords.get(m);
+		}
+		
+		return getFormattedName(m);
 	}
 
 	public static boolean isStackable(int id) {

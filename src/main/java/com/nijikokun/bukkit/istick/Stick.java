@@ -23,6 +23,8 @@ public class Stick {
 	private boolean debug;
 	private Material tool;
 	private int undoAmount;
+	private boolean useable;
+	private boolean naturalDrops;
 	
 	public static final int REMOVE_MODE = 0;
 	public static final int REPLACE_MODE = 1;
@@ -39,8 +41,11 @@ public class Stick {
 		this.distance = configService.getDistance();
 		this.protectBottom = configService.doProtectBottom();
 		this.rightClickSwitch = configService.doRightClickSwitch();
+		this.naturalDrops = configService.doesNaturalDrops();
 		this.setDebug(configService.isDebug());
 		this.tool = configService.getTool();
+		this.useable = false;
+		this.mode = REMOVE_MODE;
 	}
 
 	public void addBlock(BlockState blockState) {
@@ -84,6 +89,10 @@ public class Stick {
 	}
 
 	public String getModeAsString() {
+		if (getItem().equals(Material.FLINT_AND_STEEL) && getMode() != REMOVE_MODE) {
+			return "playing with fire";
+		}
+		
 		return (getMode() == REMOVE_MODE ? "removing" : (getMode() == REPLACE_MODE ? "replacing" : "building"));
 	}
 
@@ -233,5 +242,21 @@ public class Stick {
 
 	public boolean isDebug() {
 		return debug;
+	}
+
+	public boolean isUseable() {
+		return useable ;
+	}
+	
+	public void setUseable(boolean useable) {
+		this.useable = useable;
+	}
+
+	public void setNaturalDrops(boolean b) {
+		this.naturalDrops = b;
+	}
+	
+	public boolean doesNaturalDrops() {
+		return naturalDrops;
 	}
 }
