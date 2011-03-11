@@ -137,7 +137,7 @@ public enum CreativeStickCommand {
 		help.append(" [command] [parameters]\n");
 				
 		for (CreativeStickCommand cmd : CreativeStickCommand.values()) {
-			if (CreativeStickPlugin.permissionHandler.hasPermission(player, cmd.getPermission())) {
+			if (CSPlugin.permissionHandler.hasPermission(player, cmd.getPermission())) {
 				help.append("   " + cmd);
 				help.append("\n");
 			}

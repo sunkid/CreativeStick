@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
@@ -25,12 +26,13 @@ import org.bukkit.plugin.PluginManager;
 import com.iminurnetz.bukkit.plugin.BukkitPlugin;
 import com.iminurnetz.bukkit.plugin.util.MessageUtils;
 import com.iminurnetz.bukkit.plugin.util.PluginLogger;
+import com.iminurnetz.bukkit.util.LocationUtil;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 import com.iminurnetz.util.PersistentProperty;
 import com.iminurnetz.util.StringUtils;
 import com.nijikokun.bukkit.istick.Stick;
 
-public class CreativeStickPlugin extends BukkitPlugin {
+public class CSPlugin extends BukkitPlugin {
 	protected static PluginLogger logger;
 
 	private final PlayerListener playerListener = new CSPlayerListener(this);
@@ -46,7 +48,7 @@ public class CreativeStickPlugin extends BukkitPlugin {
 	public static ArrayList<Player> drop = new ArrayList<Player>();
 	protected static Server server;
 
-	public CreativeStickPlugin() {
+	public CSPlugin() {
 		super();
 		logger = getLogger();
 	}
@@ -486,8 +488,10 @@ public class CreativeStickPlugin extends BukkitPlugin {
 				MessageUtils.send(player, "You are now working with " + MaterialUtils.getFormattedName(stick.getItem()));
 			}
 			
+			
 			Block target = after.getBlock();
 			BlockState before = target.getState();
+			
 			// this seems to be necessary for working with water?
 			target.setType(Material.AIR);
 			target.setData((byte) 0);

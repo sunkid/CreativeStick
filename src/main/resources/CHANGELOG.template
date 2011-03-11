@@ -2,6 +2,7 @@ Listed below are released versions and cumulative changes between them
 
 @version@.@minor_version@
 
+* made it harder to kill yourself with the Stick
 * added an action queue to the Stick instead of using undo
 * refactored the IStickPlayerListener into com.iminurnetz.bukkit.plugin.creativestick.CSPlayerListener
 * refactored IStick to com.iminurnetz.bukkit.plugin.CreativeStickPlugin

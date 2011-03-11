@@ -43,9 +43,9 @@ import com.nijikokun.bukkit.istick.Stick;
 
 public class CSEventListener extends BlockListener {
 
-	private CreativeStickPlugin plugin;
+	private CSPlugin plugin;
 	
-	public CSEventListener(CreativeStickPlugin instance) {
+	public CSEventListener(CSPlugin instance) {
 		this.plugin = instance;
 	}
 	

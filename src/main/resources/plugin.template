@@ -20,7 +20,7 @@
 #   Please contact sunkid@iminurnetz.com
 #
 name: @project@
-main: com.iminurnetz.bukkit.plugin.CreativeStickPlugin
+main: com.iminurnetz.bukkit.plugin.creativestick.CSPlugin
 version: @version@.@minor_version@
 authors: [sunkid <sunkid@iminurnetz.com>, Nijiko "Nijikokun" Yonskai <nijikokun@gmail.com>]
 website: https://github.com/sunkid/CreativeStick

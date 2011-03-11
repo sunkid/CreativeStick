@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -26,13 +27,14 @@ import org.bukkit.event.player.PlayerListener;
 import org.bukkit.inventory.ItemStack;
 
 import com.iminurnetz.bukkit.plugin.util.MessageUtils;
+import com.iminurnetz.bukkit.util.LocationUtil;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 import com.nijikokun.bukkit.istick.Stick;
 
 public class CSPlayerListener extends PlayerListener {
-	public static CreativeStickPlugin plugin;
+	public static CSPlugin plugin;
 
-	public CSPlayerListener(CreativeStickPlugin instance) {
+	public CSPlayerListener(CSPlugin instance) {
 		plugin = instance;
 	}
 
@@ -98,6 +100,14 @@ public class CSPlayerListener extends PlayerListener {
 				placedAgainstBlock = targetBlocks.get(1);
 			}
 			
+			if (LocationUtil.isSameLocation(player, targetedBlock)) {
+				if (stick.isDebug()) {
+					MessageUtils.send(player, "** boink **");
+				}
+				
+				return;
+			}
+
 			BlockState state = targetedBlock.getState();
 			state.setType(mode == Stick.REMOVE_MODE ? Material.AIR : item);
 			stick.enqueue(state);
@@ -137,6 +147,13 @@ public class CSPlayerListener extends PlayerListener {
 			if (targetedBlock.getLocation().getBlockY() == 0 && stick.doProtectBottom()) {
 				plugin.log(Level.WARNING, "Player " + player.getDisplayName() + " hit rock bottom!");
 				return;
+			}
+			
+			// this shouldn't really happen!
+			if (LocationUtil.isSameLocation(player, targetedBlock)) {
+				if (stick.isDebug()) {
+					MessageUtils.send(player, "** boink **");
+				}
 			}
 
 			BlockState state = targetedBlock.getState();

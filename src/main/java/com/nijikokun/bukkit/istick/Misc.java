@@ -3,10 +3,6 @@ package com.nijikokun.bukkit.istick;
 import java.io.File;
 import java.io.IOException;
 
-import org.bukkit.entity.Player;
-
-import com.iminurnetz.bukkit.plugin.creativestick.CreativeStickPlugin;
-
 
 public class Misc {
 	public static Boolean arguments(String[] array, int amount) {
