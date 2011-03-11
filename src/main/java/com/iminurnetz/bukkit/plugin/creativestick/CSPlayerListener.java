@@ -27,13 +27,12 @@ import org.bukkit.inventory.ItemStack;
 
 import com.iminurnetz.bukkit.plugin.util.MessageUtils;
 import com.iminurnetz.bukkit.util.MaterialUtils;
-import com.nijikokun.bukkit.istick.IStick;
 import com.nijikokun.bukkit.istick.Stick;
 
 public class CSPlayerListener extends PlayerListener {
-	public static IStick plugin;
+	public static CreativeStickPlugin plugin;
 
-	public CSPlayerListener(IStick instance) {
+	public CSPlayerListener(CreativeStickPlugin instance) {
 		plugin = instance;
 	}
 

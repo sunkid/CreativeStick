@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import org.bukkit.entity.Player;
 
+import com.iminurnetz.bukkit.plugin.creativestick.CreativeStickPlugin;
+
 
 public class Misc {
 	public static Boolean arguments(String[] array, int amount) {
@@ -49,68 +51,7 @@ public class Misc {
 		return tst;
 	}
 
-	public static Player player(String name) {
-		if (IStick.server.getOnlinePlayers().length < 1) {
-			return null;
-		}
-
-		Player[] online = IStick.server.getOnlinePlayers();
-		Player player = null;
-
-		for (Player needle : online) {
-			if (needle.getName().equals(name)) {
-				player = needle;
-				break;
-			}
-			if (needle.getDisplayName().equals(name)) {
-				player = needle;
-				break;
-			}
-		}
-
-		return player;
-	}
-
-	public static Player playerMatch(String name) {
-		if (IStick.server.getOnlinePlayers().length < 1) {
-			return null;
-		}
-
-		Player[] online = IStick.server.getOnlinePlayers();
-		Player lastPlayer = null;
-
-		for (Player player : online) {
-			String playerName = player.getName();
-			String playerDisplayName = player.getDisplayName();
-
-			if (playerName.equalsIgnoreCase(name)) {
-				lastPlayer = player;
-				break;
-			}
-			if (playerDisplayName.equalsIgnoreCase(name)) {
-				lastPlayer = player;
-				break;
-			}
-
-			if (playerName.toLowerCase().indexOf(name.toLowerCase()) != -1) {
-				if (lastPlayer != null) {
-					return null;
-				}
-
-				lastPlayer = player;
-			} else if (playerDisplayName.toLowerCase().indexOf(
-					name.toLowerCase()) != -1) {
-				if (lastPlayer != null) {
-					return null;
-				}
-
-				lastPlayer = player;
-			}
-		}
-
-		return lastPlayer;
-	}
-
+	
 	public static void touch(File directory, String name) {
 		try {
 			new File(directory, name).createNewFile();

@@ -28,7 +28,6 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 
 import com.iminurnetz.util.EnumUtil;
-import com.nijikokun.bukkit.istick.IStick;
 
 public enum CreativeStickCommand {
 
@@ -138,7 +137,7 @@ public enum CreativeStickCommand {
 		help.append(" [command] [parameters]\n");
 				
 		for (CreativeStickCommand cmd : CreativeStickCommand.values()) {
-			if (IStick.permissionHandler.hasPermission(player, cmd.getPermission())) {
+			if (CreativeStickPlugin.permissionHandler.hasPermission(player, cmd.getPermission())) {
 				help.append("   " + cmd);
 				help.append("\n");
 			}

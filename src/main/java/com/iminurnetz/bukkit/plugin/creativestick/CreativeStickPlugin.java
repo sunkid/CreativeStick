@@ -1,4 +1,4 @@
-package com.nijikokun.bukkit.istick;
+package com.iminurnetz.bukkit.plugin.creativestick;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,25 +14,23 @@ import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 
 import com.iminurnetz.bukkit.plugin.BukkitPlugin;
-import com.iminurnetz.bukkit.plugin.creativestick.CSPermissionHandler;
-import com.iminurnetz.bukkit.plugin.creativestick.ConfigurationService;
-import com.iminurnetz.bukkit.plugin.creativestick.CreativeStickCommand;
-import com.iminurnetz.bukkit.plugin.creativestick.CSPlayerListener;
-import com.iminurnetz.bukkit.plugin.creativestick.CSEventListener;
 import com.iminurnetz.bukkit.plugin.util.MessageUtils;
 import com.iminurnetz.bukkit.plugin.util.PluginLogger;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 import com.iminurnetz.util.PersistentProperty;
 import com.iminurnetz.util.StringUtils;
+import com.nijikokun.bukkit.istick.Stick;
 
-public class IStick extends BukkitPlugin {
+public class CreativeStickPlugin extends BukkitPlugin {
 	protected static PluginLogger logger;
 
 	private final PlayerListener playerListener = new CSPlayerListener(this);
@@ -48,7 +46,7 @@ public class IStick extends BukkitPlugin {
 	public static ArrayList<Player> drop = new ArrayList<Player>();
 	protected static Server server;
 
-	public IStick() {
+	public CreativeStickPlugin() {
 		super();
 		logger = getLogger();
 	}
@@ -470,6 +468,69 @@ public class IStick extends BukkitPlugin {
 		if (stick.getMode() != Stick.REMOVE_MODE)
 			msg.append(" with ").append(stick.getItemName()).append(".");
 		MessageUtils.send(player, msg.toString());
+	}
+
+	public synchronized void takeAction(Cancellable event, Player player) {
+		if (event.isCancelled()) {
+			if (isDebug(player))
+				log("cancelled last action of " + player.getDisplayName());
+		} else {
+			Stick stick = getStick(player);
+			BlockState after = stick.dequeue();
+			
+			if (after == null) {
+				return;
+			}
+			
+			if (stick.didItemSwitch()) {
+				MessageUtils.send(player, "You are now working with " + MaterialUtils.getFormattedName(stick.getItem()));
+			}
+			
+			Block target = after.getBlock();
+			BlockState before = target.getState();
+			// this seems to be necessary for working with water?
+			target.setType(Material.AIR);
+			target.setData((byte) 0);
+			
+			target.setType(after.getType());
+			target.setData(after.getRawData());
+			
+			if (stick.isDebug()) {
+				log(player.getDisplayName() + " converted a block of " + MaterialUtils.getFormattedName(before.getType()) +
+						" to " + MaterialUtils.getFormattedName(after.getType()));
+			}
+			
+			stick.addBlock(before);
+			if (!MaterialUtils.isSameMaterial(before.getType(), Material.AIR)) {
+				giveItems(player, before);
+			}
+		}
+	}
+	
+	private void giveItems(Player player, BlockState state) {
+		Stick stick = getStick(player);
+	
+		List<ItemStack> items;
+		if (stick.isDrops()) {
+			if (stick.doesNaturalDrops()) {
+				items = MaterialUtils.getDroppedMaterial(state);
+			} else {
+				items = new ArrayList<ItemStack>();
+				items.add(new ItemStack(state.getTypeId(), 1));
+			}
+			
+			for (ItemStack is : items) {
+				if (isDebug(player)) {
+					log(player.getName() + " received " + is.getAmount() + " "
+							+ MaterialUtils.getFormattedName(is.getType(), is.getAmount()));
+				}
+				if (player.getInventory().firstEmpty() == -1)
+					player.getWorld().dropItemNaturally(player.getLocation(), is);
+				else {
+					player.getInventory().addItem(is);
+				}
+			}
+		}
 	}
 
 }
