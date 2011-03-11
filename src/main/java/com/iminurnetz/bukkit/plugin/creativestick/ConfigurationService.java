@@ -32,6 +32,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -51,7 +52,7 @@ public class ConfigurationService {
 	private BukkitPlugin plugin;
 	
 	// used to check the config file for updates
-	public static final String LAST_CHANGED_IN_VERSION = "0.4.27";
+	public static final String LAST_CHANGED_IN_VERSION = "0.5.0";
 	
 	// TODO convert to enums
 	// global settings
@@ -278,5 +279,20 @@ public class ConfigurationService {
 
 	public boolean doesNaturalDrops() {
 		return config.getBoolean(USER_SETTINGS_TAG + ".natural-drops", NATURAL_DROPS);
+	}
+
+	public HashSet<Byte> getIgnored() {
+		List<String> names = config.getStringList(SETTINGS_TAG + ".ignore", null);
+		HashSet<Material> materials = new HashSet<Material>();
+		for (String name : names) {
+			materials.add(MaterialUtils.getMaterial(name));
+		}
+		
+		HashSet<Byte> returnSet = new HashSet<Byte>();
+		for (Material m : materials) {
+			returnSet.add((byte) m.getId());
+		}
+		returnSet.add((byte) Material.AIR.getId());
+		return returnSet;
 	}
 }

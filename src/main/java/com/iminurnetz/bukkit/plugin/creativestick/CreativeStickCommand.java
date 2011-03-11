@@ -33,11 +33,12 @@ public enum CreativeStickCommand {
 
 	HELP("-h", "Shows help information", "[command]", CSPermissionHandler.CAN_USE_PERMISSION),
 	TOGGLE("-t", "Toggle CreativeStick on / off", "", CSPermissionHandler.CAN_USE_PERMISSION),
-	TOGGLE_MODE("-tm", "Toggle between modes", "[id]", CSPermissionHandler.CAN_USE_PERMISSION),
-	BUILD("-b", "Switch to building mode", "<id>", CSPermissionHandler.CAN_USE_PERMISSION),
-	REPLACE("-r", "Switch to replace mode", "<id>", CSPermissionHandler.CAN_USE_PERMISSION),
+	TOGGLE_MODE("-tm", "Toggle between modes", "<item>", CSPermissionHandler.CAN_USE_PERMISSION),
+	BUILD("-b", "Switch to building mode", "<item>", CSPermissionHandler.CAN_USE_PERMISSION),
+	REPLACE("-r", "Switch to replace mode", "<item>", CSPermissionHandler.CAN_USE_PERMISSION),
+	IGNORE("-i", "Set transparent blocks", "[+|-]<block>[, <+|-><block>]", CSPermissionHandler.CAN_USE_PERMISSION),
 	TOGGLE_DROPS("-td", "Toggle drops on / off", "", CSPermissionHandler.CAN_USE_PERMISSION),
-	UNDO("-u", "Undo previous action(s)", "[<n>|all]", CSPermissionHandler.CAN_USE_PERMISSION),
+	UNDO("-u", "Undo previous action(s)", "<n>|'all'", CSPermissionHandler.CAN_USE_PERMISSION),
 	// TODO special case with dual permissions; may have to rethink
 	CONFIG("-c", "Show or change config values", "[<param> <value>]", CSPermissionHandler.CAN_USE_PERMISSION),
 	VERSION("-v", "Display the current version.", "", CSPermissionHandler.CAN_USE_PERMISSION);

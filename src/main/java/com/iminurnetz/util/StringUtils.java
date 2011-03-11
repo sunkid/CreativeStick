@@ -24,6 +24,7 @@
 package com.iminurnetz.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -113,5 +114,26 @@ public class StringUtils {
 	public static boolean isTrue(String value) {
 		String word = value.toLowerCase();
 		return (word.equals("true") || word.equals("1") || word.equals("on"));
+	}
+	
+	public static String join(String joiner, String... toJoin) {
+		return join(joiner, Arrays.asList(toJoin));
+	}
+	
+	public static String join(String joiner, List<String> toJoin) {
+		if (isEmpty(joiner))
+			return joiner;
+		
+		StringBuilder result = new StringBuilder();
+		for (String s : toJoin) {
+			result.append(s);
+			result.append(joiner);
+		}
+		
+		return result.substring(0, result.length() - joiner.length());
+	}
+	
+	public static boolean isEmpty(String string) {
+		return (string == null || string.equals(""));
 	}
 }

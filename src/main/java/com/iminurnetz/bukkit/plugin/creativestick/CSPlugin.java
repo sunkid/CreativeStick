@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Vector;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
@@ -26,7 +25,7 @@ import org.bukkit.plugin.PluginManager;
 import com.iminurnetz.bukkit.plugin.BukkitPlugin;
 import com.iminurnetz.bukkit.plugin.util.MessageUtils;
 import com.iminurnetz.bukkit.plugin.util.PluginLogger;
-import com.iminurnetz.bukkit.util.LocationUtil;
+import com.iminurnetz.bukkit.util.InventoryUtil;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 import com.iminurnetz.util.PersistentProperty;
 import com.iminurnetz.util.StringUtils;
@@ -132,28 +131,31 @@ public class CSPlugin extends BukkitPlugin {
 			break;
 
 		case TOGGLE:
-			stick.toggle();
-			MessageUtils.send(player, "Has been " + (stick.isEnabled() ? "enabled" : "disabled") + ".");
+			toggle(player, stick);
 			break;
 
 		case TOGGLE_MODE:
-			success = toggleMode(player, getItemFromArgs(args));
+			success = toggleMode(player, stick, getItemFromArgs(args));
 			break;
 
 		case BUILD:
-			success = toggleBuild(player, getItemFromArgs(args));
+			success = toggleBuild(player, stick, getItemFromArgs(args));
 			break;
 
 		case REPLACE:
-			success = toggleReplace(player, getItemFromArgs(args));
+			success = toggleReplace(player, stick, getItemFromArgs(args));
+			break;
+			
+		case IGNORE:
+			doIgnore(player, stick, args);
 			break;
 
 		case UNDO:
-			doUndo(player, args.length > 1 ? args[1] : "");
+			doUndo(player, stick, args.length > 1 ? args[1] : "");
 			break;
 
 		case CONFIG:
-			success = doConfig(player, args);
+			success = doConfig(player, stick, args);
 			break;
 
 		default:
@@ -166,28 +168,73 @@ public class CSPlugin extends BukkitPlugin {
 		return true;
 	}
 
-	public boolean doConfig(Player player, String[] args) {
-		Stick stick = getStick(player);
+	public void toggle(Player player, Stick stick) {
+		stick.toggle();
+		MessageUtils.send(player, getName() + " has been " + (stick.isEnabled() ? "enabled" : "disabled") + ".");
+		checkForTool(player, stick);
+	}
+	
+	private void checkForTool(Player player, Stick stick) {
+		if (stick.isEnabled() && permissionHandler.canUse(player)) {
+			// free sticks!! YEAH!!
+			if (!player.getInventory().contains(stick.getTool())) {
+				InventoryUtil.giveItems(player, stick.getTool(), player.getInventory().getHeldItemSlot());
+				if (stick.isDebug()) {
+					MessageUtils.send(player, "You just received a " + MaterialUtils.getFormattedName(stick.getTool())
+							+ " for use with " + getName());
+				}
+			}
+			
+			InventoryUtil.switchToItems(player, stick.getTool());
+		}
+	}
+	
+	public void doIgnore(Player player, Stick stick, String[] originalArgs) {
+		String[] commandArgs = new String[originalArgs.length - 1];
+		for (int n = 0; n < commandArgs.length; n++) {
+			commandArgs[n] = originalArgs[n + 1];
+		}
+		String value = StringUtils.join(" ", commandArgs);
 
-		if (args.length < 2) {
+		String[] args = value.split(",");
+		for (String arg : args) {
+			if (arg.startsWith("+")) {
+				stick.ignore(MaterialUtils.getMaterial(arg.substring(1)));
+			} else if (arg.startsWith("-")) {
+				stick.unignore(MaterialUtils.getMaterial(arg.substring(1)));
+			} else {
+				stick.onlyIgnore(MaterialUtils.getMaterial(arg));
+			}
+		}
+		
+		MessageUtils.send(player, "You are now ignoring: " + MaterialUtils.getFormattedNameList(stick.getIgnore()));
+	}
+	
+	public boolean doConfig(Player player, Stick stick, String[] originalArgs) {
+		if (originalArgs.length < 2) {
 			MessageUtils.send(player, stick.showSettings());
 			return true;
 		}
 
-		String param = args[1];
+		String param = originalArgs[1];
 
 		if (!permissionHandler.canConfigure(player, param)) {
 			MessageUtils.send(player, CreativeStickCommand.CONFIG.showAccessDenied());
 			return true;
 		}
 
-		String value = args.length < 3 ? "" : args[2];
+		String[] commandArgs = new String[originalArgs.length - 2];
+		for (int n = 0; n < commandArgs.length; n++) {
+			commandArgs[n] = originalArgs[n + 2];
+		}
+		
+		String value = StringUtils.join(" ", commandArgs);
 
 		if (param.equalsIgnoreCase("distance")) {
 			int distance = stick.getDistance();
 			try {
 				distance = Integer.valueOf(value).intValue();
-			} catch (NumberFormatException e) {
+			} catch (Exception e) {
 				MessageUtils.send(player, "Invalid distance given!");
 				return false;
 			}
@@ -270,12 +317,11 @@ public class CSPlugin extends BukkitPlugin {
 
 			return true;
 		}
-
+		
 		return false;
 	}
 
-	public void doUndo(Player player, String what) {
-		Stick stick = getStick(player);
+	public void doUndo(Player player, Stick stick, String what) {
 		int amount = stick.getUndoAmount();
 		boolean all = false;
 
@@ -300,7 +346,7 @@ public class CSPlugin extends BukkitPlugin {
 		if (amount == 0) {
 			MessageUtils.send(player, "Nothing to undo!");
 		} else {
-			int blocksRemoved = doUndo(player, amount);
+			int blocksRemoved = doUndo(player, stick, amount);
 
 			if (blocksRemoved > 0) {
 				if (all)
@@ -314,11 +360,10 @@ public class CSPlugin extends BukkitPlugin {
 		}
 	}
 
-	public int doUndo(Player player, int amount) {
+	public int doUndo(Player player, Stick stick, int amount) {
 		if (!permissionHandler.hasPermission(player, CreativeStickCommand.UNDO.getPermission()))
 			return -1;
 
-		Stick stick = getStick(player);
 		Vector<BlockState> blocks = stick.getBlocks();
 		int blocksRemoved = 0;
 		int lastIndex = blocks.size();
@@ -338,11 +383,9 @@ public class CSPlugin extends BukkitPlugin {
 		return blocksRemoved;
 	}
 
-	public boolean toggleReplace(Player player, String item) {
+	public boolean toggleReplace(Player player, Stick stick, String item) {
 		if (!permissionHandler.hasPermission(player, CreativeStickCommand.REPLACE.getPermission()))
 			return false;
-
-		Stick stick = getStick(player);
 
 		if (!checkOptionalItemSwitch(player, item, stick))
 			return false;
@@ -352,11 +395,9 @@ public class CSPlugin extends BukkitPlugin {
 		return true;
 	}
 	
-	public boolean toggleBuild(Player player, String item) {
+	public boolean toggleBuild(Player player, Stick stick, String item) {
 		if (!permissionHandler.hasPermission(player, CreativeStickCommand.BUILD.getPermission()))
 			return false;
-
-		Stick stick = getStick(player);
 
 		if (!checkOptionalItemSwitch(player, item, stick))
 			return false;
@@ -372,11 +413,10 @@ public class CSPlugin extends BukkitPlugin {
 		return true;
 	}
 
-	public boolean toggleMode(Player player, String item) {
+	public boolean toggleMode(Player player, Stick stick, String item) {
 		if (!permissionHandler.hasPermission(player, CreativeStickCommand.TOGGLE_MODE.getPermission()))
 			return false;
 
-		Stick stick = getStick(player);
 		if (!checkOptionalItemSwitch(player, item, stick))
 			return false;
 
@@ -401,12 +441,10 @@ public class CSPlugin extends BukkitPlugin {
 		if (!sticks.containsKey(player)) {
 			stick = new Stick(configLoader);
 			sticks.put(player, stick);
+			checkForTool(player, stick);
 		}
 
 		stick = sticks.get(player);
-		stick.setUseable((player.getItemInHand().getType() == stick.getTool())
-							&& stick.isEnabled()
-							&& permissionHandler.canUse(player));
 		return stick;
 	}
 
@@ -513,7 +551,7 @@ public class CSPlugin extends BukkitPlugin {
 	
 	private void giveItems(Player player, BlockState state) {
 		Stick stick = getStick(player);
-	
+		
 		List<ItemStack> items;
 		if (stick.isDrops()) {
 			if (stick.doesNaturalDrops()) {
@@ -523,18 +561,19 @@ public class CSPlugin extends BukkitPlugin {
 				items.add(new ItemStack(state.getTypeId(), 1));
 			}
 			
+			InventoryUtil.giveItems(player, items);
 			for (ItemStack is : items) {
 				if (isDebug(player)) {
 					log(player.getName() + " received " + is.getAmount() + " "
 							+ MaterialUtils.getFormattedName(is.getType(), is.getAmount()));
 				}
-				if (player.getInventory().firstEmpty() == -1)
-					player.getWorld().dropItemNaturally(player.getLocation(), is);
-				else {
-					player.getInventory().addItem(is);
-				}
 			}
 		}
 	}
-
+	
+	public boolean canUse(Player player, Stick stick) {
+		return((player.getItemInHand().getType() == stick.getTool())
+				&& stick.isEnabled()
+				&& permissionHandler.canUse(player));
+	}
 }

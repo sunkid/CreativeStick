@@ -23,23 +23,11 @@
 
 package com.iminurnetz.bukkit.plugin.creativestick;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.inventory.ItemStack;
-
-import com.iminurnetz.bukkit.plugin.util.MessageUtils;
-import com.iminurnetz.bukkit.util.MaterialUtils;
-import com.nijikokun.bukkit.istick.Stick;
 
 public class CSEventListener extends BlockListener {
 

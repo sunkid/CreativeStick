@@ -1,6 +1,7 @@
 package com.nijikokun.bukkit.istick;
 
 import java.util.ArrayDeque;
+import java.util.HashSet;
 import java.util.Vector;
 
 import org.bukkit.Material;
@@ -20,7 +21,7 @@ public class Stick {
 	private int distance;
 	private boolean drops;
 	private boolean enabled;
-	private Vector<Material> ignore = new Vector<Material>();
+	private HashSet<Byte> ignore = new HashSet<Byte>();
 	private Material item = Material.AIR;
 	private int mode = REMOVE_MODE;
 	private boolean protectBottom;
@@ -28,13 +29,12 @@ public class Stick {
 	private boolean debug;
 	private Material tool;
 	private int undoAmount;
-	private boolean useable = false;
 	private boolean naturalDrops;
 	
 	private ArrayDeque<BlockStateForSwitching> actionQueue = new ArrayDeque<BlockStateForSwitching>();
 
 	public Stick(ConfigurationService configService) {
-		this.ignore.add(Material.AIR);
+		this.ignore = configService.getIgnored();
 		this.enabled = configService.isEnabled();
 		this.drops = configService.doesDrop();
 		this.undoAmount = configService.getUndoAmount();
@@ -74,7 +74,7 @@ public class Stick {
 		return this.distance;
 	}
 
-	public Vector<Material> getIgnore() {
+	public HashSet<Byte> getIgnore() {
 		return this.ignore;
 	}
 
@@ -103,8 +103,8 @@ public class Stick {
 	}
 
 	public void ignore(Material m) {
-		if (!this.ignore.contains(m))
-			this.ignore.add(m);
+		if (m == null) return;
+		this.ignore.add((byte) m.getId());
 	}
 
 	public boolean isDrops() {
@@ -215,6 +215,9 @@ public class Stick {
 		s.append("Debug mode: ");
 		s.append(isDebug());
 		s.append("\n");
+		s.append("Currently ignored: ");
+		s.append(MaterialUtils.getFormattedNameList(getIgnore()));
+		s.append("\n");
 
 
 		return s.toString();
@@ -228,9 +231,9 @@ public class Stick {
 		this.drops = (!isDrops());
 	}
 
-	public void unignore(String block) {
-		if (this.ignore.contains(block))
-			this.ignore.remove(block);
+	public void unignore(Material material) {
+		if (material == null) return;
+		this.ignore.remove((byte) material.getId());
 	}
 
 	public String getItemName() {
@@ -247,14 +250,6 @@ public class Stick {
 
 	public boolean isDebug() {
 		return debug;
-	}
-
-	public boolean isUseable() {
-		return useable ;
-	}
-	
-	public void setUseable(boolean useable) {
-		this.useable = useable;
 	}
 
 	public void setNaturalDrops(boolean b) {
@@ -320,6 +315,13 @@ public class Stick {
 	
 	public boolean didItemSwitch() {
 		return didItemSwitch;
+	}
+
+	public void onlyIgnore(Material material) {
+		if (material == null) return;
+		this.ignore = new HashSet<Byte>();
+		ignore(Material.AIR);
+		ignore(material);
 	}
 }
 

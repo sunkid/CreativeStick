@@ -27,11 +27,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
@@ -274,29 +274,43 @@ public class MaterialUtils {
 	}
 
 	public static List<Material> getList() {
-		return Arrays.asList(Material.values());
+		List<Material> l = new ArrayList<Material>();
+		l.addAll(Arrays.asList(Material.values()));
+		return l;
 	}
 
 	/**
 	 * Check if the first material is "the same" as any of the other materials by comparing
 	 * their names only.
-	 * @param m1 the Material to check
-	 * @param m2 the Material enum members to check against
+	 * @param m the Material to check
+	 * @param materials the Material enum members to check against
 	 * @return true if the name of any of the m2 Material enum members matches the name of m1
 	 */
-	public static boolean isSameMaterial(Material m1, Material... m2) {
-		if (m1 == null) {
+	public static boolean isSameMaterial(Material m, List<Material> materials) {
+		if (m == null) {
 			return false;
 		}
 		
-		for (Material m : m2) {
-			if (m1.name().equals(m.name())) {
+		for (Material mI : materials) {
+			if (mI.name().equals(m.name())) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
+	/**
+	 * Check if the first material is "the same" as any of the other materials by comparing
+	 * their names only.
+	 * @param m the Material to check
+	 * @param materials the Material enum members to check against
+	 * @return true if the name of any of the m2 Material enum members matches the name of m1
+	 */
+	public static boolean isSameMaterial(Material m, Material... materials) {
+		return isSameMaterial(m, Arrays.asList(materials));
+	}
+
+
 	public static boolean isWater(Material m) {
 		return isSameMaterial(m, Material.WATER, Material.STATIONARY_WATER);
 	}
@@ -699,6 +713,17 @@ public class MaterialUtils {
 		if (m.isBlock())
 			return m;
 		return null;
+	}
+
+	public static List<String> getFormattedNameList(HashSet<Byte> materialIds) {
+		List<Material> materials = getList();
+		for (Iterator<Material> mI = materials.iterator(); mI.hasNext();) {
+			Material m = mI.next();
+			if (!materialIds.contains((byte) m.getId()) || !m.isBlock()) {
+				mI.remove();
+			} 
+		}
+		return getFormattedNameList(materials);
 	}
 
 }

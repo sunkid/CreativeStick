@@ -3,12 +3,14 @@ Listed below are released versions and cumulative changes between them
 @version@.@minor_version@
 
 * made it harder to kill yourself with the Stick
+* implemented creativestick.config.<param> permissions
+* added a gratuitous Stick being handed to the player when CS is enabled manually
 * added an action queue to the Stick instead of using undo
+* added the ability to treat certain types of blocks as transparent
 * refactored the IStickPlayerListener into com.iminurnetz.bukkit.plugin.creativestick.CSPlayerListener
 * refactored IStick to com.iminurnetz.bukkit.plugin.CreativeStickPlugin
 * added toggling back to remove mode back in again and fixed the initial state
 * added notification when the Stick is selected
-* implemented creativestick.config.<param> permissions
 
 0.4.25
 

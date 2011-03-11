@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -61,8 +60,8 @@ public class CSPlayerListener extends PlayerListener {
 
     private void checkStatus(Player player) {
     	Stick stick = plugin.getStick(player);
-    	if (stick.isUseable()) {
-    		MessageUtils.send(player, ChatColor.GREEN, "You are using a creative stick!");
+    	if (plugin.canUse(player, stick)) {
+    		MessageUtils.send(player, ChatColor.GREEN, "You are now using " + plugin.getName());
     	}
     }
     
@@ -74,9 +73,9 @@ public class CSPlayerListener extends PlayerListener {
 		stick = plugin.getStick(player);
 		mode = stick.getMode();
 
-		if (stick.isUseable()) {
+		if (plugin.canUse(player, stick)) {
 
-			List<Block> targetBlocks = player.getLastTwoTargetBlocks(null, stick.getDistance());
+			List<Block> targetBlocks = player.getLastTwoTargetBlocks(stick.getIgnore(), stick.getDistance());
 			Block targetedBlock = null;
 			Block placedAgainstBlock = null;
 			
@@ -99,7 +98,12 @@ public class CSPlayerListener extends PlayerListener {
 				targetedBlock = targetBlocks.get(0);
 				placedAgainstBlock = targetBlocks.get(1);
 			}
-			
+
+			if (targetedBlock.getLocation().getBlockY() == 0 && stick.doProtectBottom()) {
+				plugin.log(Level.WARNING, "Player " + player.getDisplayName() + " hit rock bottom!");
+				return;
+			}
+						
 			if (LocationUtil.isSameLocation(player, targetedBlock)) {
 				if (stick.isDebug()) {
 					MessageUtils.send(player, "** boink **");
@@ -114,11 +118,11 @@ public class CSPlayerListener extends PlayerListener {
 
 			if (MaterialUtils.isSameMaterial(item, Material.FIRE)) {
 				state.getData().setData((byte) 0);
-				actionEvent = new BlockIgniteEvent(targetedBlock, IgniteCause.FLINT_AND_STEEL, player);
-			} else {
-				actionEvent = new BlockPlaceEvent(Type.BLOCK_PLACED, targetedBlock, null, placedAgainstBlock, new ItemStack(stick.getTool()), player, true);
-			}
-
+				// this also does not seem to fire
+				// actionEvent = new BlockIgniteEvent(targetedBlock, IgniteCause.FLINT_AND_STEEL, player);
+			} 
+			
+			actionEvent = new BlockPlaceEvent(Type.BLOCK_PLACED, targetedBlock, null, placedAgainstBlock, new ItemStack(stick.getTool()), player, true);
 			plugin.getServer().getPluginManager().callEvent(actionEvent);
 			
 			/* BlockBreakEvent don't seem to work yet
@@ -135,9 +139,9 @@ public class CSPlayerListener extends PlayerListener {
 		Player player = event.getPlayer();
 		Stick stick = plugin.getStick(player);
 
-		if (stick.isUseable()) {
+		if (plugin.canUse(player, stick)) {
 
-			List<Block> targetBlocks = player.getLastTwoTargetBlocks(null, stick.getDistance());
+			List<Block> targetBlocks = player.getLastTwoTargetBlocks(stick.getIgnore(), stick.getDistance());
 			Block targetedBlock = targetBlocks.get(targetBlocks.size() - 1);
 			if (targetedBlock == null) {
 				plugin.log("onPlayerItem: block is null... ignored event");
