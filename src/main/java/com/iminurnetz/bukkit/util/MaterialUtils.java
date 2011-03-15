@@ -33,9 +33,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Colorable;
+import org.bukkit.material.MaterialData;
 
 import com.iminurnetz.util.StringUtils;
 
@@ -257,6 +260,40 @@ public class MaterialUtils {
 		return names;
 	}
 
+	public static String getFormattedName(Material m) {
+		String result = StringUtils.constantCaseToEnglish(m.name());
+		result.replaceAll("(on|off)$", "($1)");
+		return result;
+	}
+
+	public static String getFormattedName(Material m, int amount) {
+		if (amount > 1) {
+			return pluralWords.get(m);
+		}
+		
+		return getFormattedName(m);
+	}
+
+	public static String getFormattedName(Material material, MaterialData data) {
+		return getFormattedName(material, data, 1);
+	}
+
+	public static String getFormattedName(Material m, MaterialData data, int amount) {
+		String name = getFormattedName(m, amount);
+		if (data instanceof Colorable) {
+			name = getColor(data) + " " + name;
+		}
+		return name;
+	}
+	
+	public static String getFormattedName(Item item) {
+		return getFormattedName(item.getMaterial(), item.getData());
+	}
+	
+	public static String getFormattedName(ItemStack stack) {
+		return getFormattedName(stack.getType(), stack.getData(), stack.getAmount());
+	}
+
 	public static List<String> getFormattedNameList() {
 		return getFormattedNameList(getList());
 	}
@@ -422,7 +459,7 @@ public class MaterialUtils {
 	public static List<ItemStack> getDroppedMaterial(Material m, byte originalData) {
 		int n = 0;
 		Material dm = Material.AIR;
-		byte data = (byte) 0;
+		byte data = originalData;
 
 		List<ItemStack> items = new ArrayList<ItemStack>();
 		
@@ -641,20 +678,6 @@ public class MaterialUtils {
 			return materials.get(0);
 	}
 
-	public static String getFormattedName(Material m) {
-		String result = StringUtils.constantCaseToEnglish(m.name());
-		result.replaceAll("(on|off)$", "($1)");
-		return result;
-	}
-
-	public static String getFormattedName(Material m, int amount) {
-		if (amount > 1) {
-			return pluralWords.get(m);
-		}
-		
-		return getFormattedName(m);
-	}
-
 	public static boolean isStackable(int id) {
 		return isStackable(Material.getMaterial(id));
 	}
@@ -724,6 +747,73 @@ public class MaterialUtils {
 			} 
 		}
 		return getFormattedNameList(materials);
+	}
+
+	public static MaterialData getData(Material material, String string) {
+		byte data = (byte) 0;
+		try {
+			data = Byte.parseByte(string);
+		} catch (NumberFormatException e) {
+			if (isSameMaterial(material, Material.WOOL, Material.INK_SACK)) {
+				for (DyeColor color : DyeColor.values()) {
+					if (color.name().equalsIgnoreCase(string) ||
+							StringUtils.constantCaseToEnglish(color.name()).equalsIgnoreCase(string)) {
+						data = color.getData();
+						break;
+					}
+				}
+			} else if (isSameMaterial(material, Material.LOG, Material.LEAVES)) {
+				if (string.equalsIgnoreCase("redwood")) {
+					data = (byte) 1;
+				} else if (string.equalsIgnoreCase("birch")) {
+					data = (byte) 2;
+				}
+			} else if (isSameMaterial(material, Material.STEP)) {
+				if (string.equalsIgnoreCase("sandstone")) {
+					data = (byte) 1;
+				} else if (string.equalsIgnoreCase("wood")) {
+					data = (byte) 2;
+				} else if (string.equalsIgnoreCase("cobblestone")) {
+					data = (byte) 3;
+				}
+			}
+		}
+		
+		return material.getNewData((byte) data);
+	}
+
+	public static String getColor(MaterialData data) {
+		if (!(data instanceof Colorable))
+			return "";
+		
+		return StringUtils.constantCaseToEnglish(((Colorable) data).getColor().name());
+	}
+
+	public static Item getPlaceableMaterial(Item item) {
+		return new Item(getPlaceableMaterial(item.getMaterial()), item.getData());
+	}
+
+	public static boolean isSameItem(Item item1, Item item2) {
+		if ((item1 == null && item2 != null) || (item1 != null && item2 == null)) {
+			return false;
+		} else if (item1 != null && item2 != null) {
+			return isSameMaterial(item1.getMaterial(), item2.getMaterial()) &&
+				isSameMaterialData(item1.getData(), item2.getData());
+		}
+		
+		// both are null
+		return true;
+	}
+
+	public static boolean isSameMaterialData(MaterialData data1, MaterialData data2) {
+		if ((data1 != null && data2 == null) || (data1 == null && data2 != null)) {
+			return false;
+		} else if (data1 != null && data2 != null) {
+			return data1.getData() == data2.getData();
+		}
+		
+		// both are null
+		return true;
 	}
 
 }

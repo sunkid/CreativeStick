@@ -36,7 +36,7 @@ public enum CreativeStickCommand {
 	TOGGLE_MODE("-tm", "Toggle between modes", "<item>", CSPermissionHandler.CAN_USE_PERMISSION),
 	BUILD("-b", "Switch to building mode", "<item>", CSPermissionHandler.CAN_USE_PERMISSION),
 	REPLACE("-r", "Switch to replace mode", "<item>", CSPermissionHandler.CAN_USE_PERMISSION),
-	IGNORE("-i", "Set transparent blocks", "[+|-]<block>[, <+|-><block>]", CSPermissionHandler.CAN_USE_PERMISSION),
+	IGNORE("-i", "Set transparencies", "[+|-]<block>[, <+|-><block>]", CSPermissionHandler.CAN_USE_PERMISSION),
 	TOGGLE_DROPS("-td", "Toggle drops on / off", "", CSPermissionHandler.CAN_USE_PERMISSION),
 	UNDO("-u", "Undo previous action(s)", "<n>|'all'", CSPermissionHandler.CAN_USE_PERMISSION),
 	// TODO special case with dual permissions; may have to rethink

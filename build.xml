@@ -78,6 +78,7 @@
 			<fileset dir="${build}">
 				<exclude name="**/tests/**" />
 				<exclude name="**/accesslog/**"/>
+				<exclude name="**/playground/**"/>
 			</fileset>
 			<fileset dir="${release}">
 				<include name="license.txt" />

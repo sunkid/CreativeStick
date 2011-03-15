@@ -1,13 +1,16 @@
 package com.nijikokun.bukkit.istick;
 
-import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Vector;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
+import org.bukkit.event.Cancellable;
+import org.bukkit.material.MaterialData;
 
 import com.iminurnetz.bukkit.plugin.creativestick.ConfigurationService;
+import com.iminurnetz.bukkit.util.Item;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 
 public class Stick {
@@ -22,7 +25,7 @@ public class Stick {
 	private boolean drops;
 	private boolean enabled;
 	private HashSet<Byte> ignore = new HashSet<Byte>();
-	private Material item = Material.AIR;
+	private Item item = new Item(Material.AIR);
 	private int mode = REMOVE_MODE;
 	private boolean protectBottom;
 	private boolean rightClickSwitch;
@@ -31,7 +34,7 @@ public class Stick {
 	private int undoAmount;
 	private boolean naturalDrops;
 	
-	private ArrayDeque<BlockStateForSwitching> actionQueue = new ArrayDeque<BlockStateForSwitching>();
+	private HashMap<Cancellable, BlockStateForSwitching> actionQueue = new HashMap<Cancellable, BlockStateForSwitching>();
 
 	public Stick(ConfigurationService configService) {
 		this.ignore = configService.getIgnored();
@@ -78,7 +81,7 @@ public class Stick {
 		return this.ignore;
 	}
 
-	public Material getItem() {
+	public Item getItem() {
 		return this.item;
 	}
 
@@ -139,24 +142,31 @@ public class Stick {
 		this.enabled = enabled;
 	}
 
-	public void setItem(Material m) {
-		if (!MaterialUtils.isSameMaterial(item, m)) {
-			this.item = m;
+	public boolean setItem(String item) {
+		try {
+			setItem(new Item(item));
+		} catch (InstantiationException e) {
+			return false;
+		}
+		
+		return true;
+	}
+
+	public void setItem(Material material) {
+		setItem(material, material.getNewData((byte) 0));
+	}
+	
+	public void setItem(Item item) {
+		if (!MaterialUtils.isSameItem(getItem(), item)) {
+			this.item = item;
 			didItemSwitch = true;
 		} else {
 			didItemSwitch = false;
 		}
 	}
-
-	public boolean setItem(String item) {
-		Material m = MaterialUtils.getPlaceableMaterial(item);
-
-		if (m == null) {
-			return false;
-		}
-
-		this.item = m;
-		return true;
+	
+	public void setItem(Material material, MaterialData data) {
+		setItem(new Item(material, data));
 	}
 
 	public void setMode(int mode) {
@@ -265,8 +275,8 @@ public class Stick {
 	 * @param state the BlockState for the user's queued action
 	 * @return true on success, false otherwise
 	 */
-	public synchronized boolean enqueue(BlockState state) {
-		return enqueue(state, false);
+	public synchronized void enqueue(Cancellable event, BlockState state) {
+		enqueue(event, state, false);
 	}
 	
 	private boolean didItemSwitch = false;
@@ -279,34 +289,30 @@ public class Stick {
 	 * @param forItemSwitching whether to use this blocks material for future actions
 	 * @return true on success, false otherwise
 	 */
-	public synchronized boolean enqueue(BlockState state, boolean forItemSwitching) {
-		if (state != null) {
-			return actionQueue.add(new BlockStateForSwitching(state, forItemSwitching && doRightClickSwitch()));
-		}
-	
-		return false;
+	public synchronized void enqueue(Cancellable event, BlockState state, boolean forItemSwitching) {
+		actionQueue.put(event, new BlockStateForSwitching(state, forItemSwitching && doRightClickSwitch()));
 	}
 
 	/**
 	 * Returns the next BlockState to act on. It also attempts to switch to this item if the enqueue
 	 * method was told to do so.
+	 * @param event 
 	 * @return the BlockState next in line or null if there are none.
 	 */
-	public synchronized BlockState dequeue() {
-		BlockStateForSwitching bs4s = actionQueue.pollFirst();
+	public synchronized BlockState dequeue(Cancellable event) {
+		BlockStateForSwitching bs4s = actionQueue.remove(event);
 		if (bs4s == null) {
 			return null;
 		}
 		
 		BlockState state = bs4s.state;
 		
-		Material item = state.getBlock().getState().getType();
-		item = MaterialUtils.getPlaceableMaterial(item);
+		Material blockMaterial = state.getBlock().getState().getType();
 		
 		didItemSwitch = bs4s.doSwitch;
 		
-		if (item != null && bs4s.doSwitch) {
-			setItem(item);
+		if (blockMaterial != null && bs4s.doSwitch) {
+			setItem(blockMaterial, state.getBlock().getState().getData());
 		}
 		return state;
 	}

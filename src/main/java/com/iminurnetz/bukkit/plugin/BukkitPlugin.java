@@ -47,6 +47,10 @@ public abstract class BukkitPlugin extends JavaPlugin {
 
 		logger.log("loaded");
 	}
+	
+	public void onLoad() {
+		// empty
+	}
 
 	public PluginLogger getLogger() {
 		return logger;
@@ -110,4 +114,8 @@ public abstract class BukkitPlugin extends JavaPlugin {
 		return MessageUtils.colorize(color, getMessagePrefix());
 	}
 
+	@Override
+	public void onDisable() {
+		logger.log("un-loaded");
+	}
 }

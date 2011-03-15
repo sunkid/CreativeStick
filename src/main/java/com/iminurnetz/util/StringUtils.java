@@ -63,7 +63,10 @@ public class StringUtils {
 		ArrayList<String> results = new ArrayList<String>();
 
 		String searchString = string.trim();
-
+		
+		if (isEmpty(string))
+			return results;
+		
 		if (searchString.substring(0, 1).matches("[A-Z]")) {
 			// first check for "camel-case fuzzy"
 			Pattern p = Pattern.compile("([A-Z]|[a-z]|\\*)(?=[a-z*]*)[a-z*]*");
@@ -117,16 +120,16 @@ public class StringUtils {
 	}
 	
 	public static String join(String joiner, String... toJoin) {
-		return join(joiner, Arrays.asList(toJoin));
+		return join(joiner, Arrays.asList(toJoin), 0);
 	}
 	
-	public static String join(String joiner, List<String> toJoin) {
-		if (isEmpty(joiner))
-			return joiner;
+	public static String join(String joiner, List<String> toJoin, int start) {
+		if (isEmpty(joiner) || toJoin == null || toJoin.size() == 0 || toJoin.size() < start)
+			return "";
 		
 		StringBuilder result = new StringBuilder();
-		for (String s : toJoin) {
-			result.append(s);
+		for (int n = start; n < toJoin.size(); n++) {
+			result.append(toJoin.get(n));
 			result.append(joiner);
 		}
 		
@@ -135,5 +138,9 @@ public class StringUtils {
 	
 	public static boolean isEmpty(String string) {
 		return (string == null || string.equals(""));
+	}
+
+	public static String join(String joiner, String[] toJoin, int start) {
+		return join(joiner, Arrays.asList(toJoin), start);
 	}
 }

@@ -45,4 +45,51 @@ public class LocationUtil {
 		
 		return false;
 	}
+	
+	/**
+	 * Return the face of a block when viewing the block at location b from location a.
+	 * @param player the point one is viewing from
+	 * @param targetedBlock the point looked at
+	 * @return the BlockFace looked at
+	 */
+	public static BlockFace getFace(Player player, Block targetedBlock) {
+		// TODO fix me please!
+		Location playerLoc = player.getEyeLocation();
+		double x = targetedBlock.getX() - playerLoc.getX();
+		double z = targetedBlock.getZ() - playerLoc.getZ();
+		
+		if (x == 0 && z == 0) {
+			if (targetedBlock.getY() > playerLoc.getY()) {
+				return BlockFace.DOWN;
+			}
+			
+			return BlockFace.UP;
+		} else if (Math.abs(x) == Math.abs(z)) {
+			if (x > 0 && z > 0) {
+				return BlockFace.NORTH_EAST;
+			} else if (x > 0 && z < 0) {
+				return BlockFace.SOUTH_EAST;
+			} else if (x < 0 && z > 0) {
+				return BlockFace.NORTH_WEST;
+			} else if (x < 0 && z < 0) {
+				return BlockFace.SOUTH_WEST;
+			}
+		}
+		int direction = (int) Math.floor(Math.atan2(x, z)*2/Math.PI + .5);
+		
+		System.err.println("x: " + x + " y: " + z + " " + Math.atan2(z, x) + " " + direction);
+
+		switch(direction) {
+			case 0:
+				return BlockFace.NORTH;
+			case 1:
+				return BlockFace.EAST;
+			case 2:
+				return BlockFace.SOUTH;
+			case -1:
+				return BlockFace.WEST;
+		}
+
+		return null;
+	}
 }

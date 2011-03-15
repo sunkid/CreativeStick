@@ -1,5 +1,13 @@
 Listed below are released versions and cumulative changes between them
 
+0.5.1
+
+* fixed mangled event handling
+* implemented item selection data specification to allow for colored wool, for example
+* fixed mangled command handling
+* ladders now work somewhat better for all the wrong reasons
+* tested with craftbukkit build 544
+
 0.5.0
 
 * made it harder to kill yourself with the Stick

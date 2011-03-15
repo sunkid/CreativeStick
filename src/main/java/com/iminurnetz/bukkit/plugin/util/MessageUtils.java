@@ -35,8 +35,9 @@ public class MessageUtils {
 	}
 	
 	public static void send(Player player, ChatColor color, String message) {
-		for (String line : message.split("\n"))
-			player.sendMessage(line);
+		for (String line : message.split("\n")) {
+			player.sendMessage(color + line);
+		}
 	}
 
 	public static String colorize(ChatColor color, String string) {

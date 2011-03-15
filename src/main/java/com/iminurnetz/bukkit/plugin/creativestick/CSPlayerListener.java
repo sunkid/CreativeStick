@@ -10,22 +10,23 @@ import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Type;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerItemEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import com.iminurnetz.bukkit.plugin.util.MessageUtils;
+import com.iminurnetz.bukkit.util.Item;
 import com.iminurnetz.bukkit.util.LocationUtil;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 import com.nijikokun.bukkit.istick.Stick;
@@ -79,7 +80,7 @@ public class CSPlayerListener extends PlayerListener {
 			Block targetedBlock = null;
 			Block placedAgainstBlock = null;
 			
-			Material item = stick.getItem();
+			Item item = stick.getItem();
 			
 			if (!item.isBlock()) {
 				item = MaterialUtils.getPlaceableMaterial(item);
@@ -112,17 +113,48 @@ public class CSPlayerListener extends PlayerListener {
 				return;
 			}
 
-			BlockState state = targetedBlock.getState();
-			state.setType(mode == Stick.REMOVE_MODE ? Material.AIR : item);
-			stick.enqueue(state);
+			actionEvent = new BlockPlaceEvent(Type.BLOCK_PLACED, targetedBlock, null, placedAgainstBlock, new ItemStack(stick.getTool()), player, true);
 
-			if (MaterialUtils.isSameMaterial(item, Material.FIRE)) {
-				state.getData().setData((byte) 0);
+			BlockState state = targetedBlock.getState();
+			state.setType(mode == Stick.REMOVE_MODE ? Material.AIR : item.getMaterial());
+			
+			MaterialData data = null;
+			if (mode == Stick.REMOVE_MODE) {
+				data = Material.AIR.getNewData((byte) 0);
+			} else if (MaterialUtils.isSameMaterial(item.getMaterial(), Material.LADDER)) {
+				BlockFace face = LocationUtil.getFace(player, targetedBlock);
+				if (stick.isDebug()) {
+					MessageUtils.send(player, "clicked " + face + " face! (" + player.getEyeLocation() + ")");
+				}
+				
+				switch (face) {
+				case WEST:
+					data = Material.LADDER.getNewData((byte) 2);
+					break;
+				case EAST:
+					data = Material.LADDER.getNewData((byte) 3);
+					break;
+				case SOUTH:
+					data = Material.LADDER.getNewData((byte) 4);
+					break;
+				case NORTH:
+					data = Material.LADDER.getNewData((byte) 5);
+					break;
+				}
+			} else {
+				data = item.getData();
+			}
+			
+			if (data != null)
+				state.setData(data);
+			
+			stick.enqueue((Cancellable)actionEvent, state);
+
+			if (MaterialUtils.isSameMaterial(item.getMaterial(), Material.FIRE)) {
 				// this also does not seem to fire
 				// actionEvent = new BlockIgniteEvent(targetedBlock, IgniteCause.FLINT_AND_STEEL, player);
 			} 
 			
-			actionEvent = new BlockPlaceEvent(Type.BLOCK_PLACED, targetedBlock, null, placedAgainstBlock, new ItemStack(stick.getTool()), player, true);
 			plugin.getServer().getPluginManager().callEvent(actionEvent);
 			
 			/* BlockBreakEvent don't seem to work yet
@@ -160,16 +192,18 @@ public class CSPlayerListener extends PlayerListener {
 				}
 			}
 
-			BlockState state = targetedBlock.getState();
-			state.setType(Material.AIR);
-			stick.enqueue(state, true);
-			
 			// BlockBreakEvent doesn't seem to do it
 			BlockPlaceEvent bpe = new BlockPlaceEvent(Type.BLOCK_PLACED, targetedBlock, null, targetBlocks.get(0), new ItemStack(stick.getTool()), player, true); 
+
+			BlockState state = targetedBlock.getState();
+			state.setType(Material.AIR);
+			state.setData(Material.AIR.getNewData((byte) 0));
+			stick.enqueue(bpe, state, true);
+			
 			plugin.getServer().getPluginManager().callEvent(bpe);
 			
-			BlockBreakEvent bbe = new BlockBreakEvent(targetedBlock, player);
-			plugin.getServer().getPluginManager().callEvent(bbe);
+			/* BlockBreakEvent bbe = new BlockBreakEvent(targetedBlock, player);
+			plugin.getServer().getPluginManager().callEvent(bbe); */
 		}
 	}
 }
