@@ -2,6 +2,12 @@ Listed below are released versions and cumulative changes between them
 
 @version@.@minor_version@
 
+0.5.2
+
+* quick fix for when an invalid item is specified in settings.ignore
+
+0.5.1
+
 * fixed mangled event handling
 * implemented item selection data specification to allow for colored wool, for example
 * fixed mangled command handling

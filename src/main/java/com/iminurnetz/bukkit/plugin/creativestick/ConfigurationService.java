@@ -285,7 +285,9 @@ public class ConfigurationService {
 		List<String> names = config.getStringList(SETTINGS_TAG + ".ignore", null);
 		HashSet<Material> materials = new HashSet<Material>();
 		for (String name : names) {
-			materials.add(MaterialUtils.getMaterial(name));
+			Material m = MaterialUtils.getMaterial(name);
+			if (m != null)
+				materials.add(m);
 		}
 		
 		HashSet<Byte> returnSet = new HashSet<Byte>();

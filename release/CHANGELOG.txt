@@ -1,6 +1,6 @@
 Listed below are released versions and cumulative changes between them
 
-0.5.1
+0.5.2
 
 * fixed mangled event handling
 * implemented item selection data specification to allow for colored wool, for example
