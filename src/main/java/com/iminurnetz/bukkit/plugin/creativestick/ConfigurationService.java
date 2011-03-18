@@ -52,7 +52,7 @@ public class ConfigurationService {
 	private BukkitPlugin plugin;
 	
 	// used to check the config file for updates
-	public static final String LAST_CHANGED_IN_VERSION = "0.5.0";
+	public static final String LAST_CHANGED_IN_VERSION = "0.5.3";
 	
 	// TODO convert to enums
 	// global settings
@@ -71,6 +71,7 @@ public class ConfigurationService {
 	public static final boolean PROTECT_BOTTOM = true;
 	public static final boolean DEBUG = false;
 	public static final boolean NATURAL_DROPS = false;
+	public static final boolean ANNOUNCE = false;
 	
 	// permissions
 	public static final String PERMISSIONS_TAG = "permissions";
@@ -279,6 +280,10 @@ public class ConfigurationService {
 
 	public boolean doesNaturalDrops() {
 		return config.getBoolean(USER_SETTINGS_TAG + ".natural-drops", NATURAL_DROPS);
+	}
+	
+	public boolean doAnnounce() {
+		return config.getBoolean(USER_SETTINGS_TAG + ".announce", ANNOUNCE);
 	}
 
 	public HashSet<Byte> getIgnored() {

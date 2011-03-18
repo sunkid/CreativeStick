@@ -61,7 +61,7 @@ public class CSPlayerListener extends PlayerListener {
 
     private void checkStatus(Player player) {
     	Stick stick = plugin.getStick(player);
-    	if (plugin.canUse(player, stick)) {
+    	if (plugin.canUse(player, stick) && (stick.doAnnounce() || stick.isDebug())) {
     		MessageUtils.send(player, ChatColor.GREEN, "You are now using " + plugin.getName());
     	}
     }

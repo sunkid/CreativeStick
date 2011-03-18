@@ -5,6 +5,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 public class InventoryUtil {
 	public static void giveItems(Player player, List<ItemStack> items) {
@@ -40,8 +41,18 @@ public class InventoryUtil {
 
 	public static void switchItems(Player player, int slot1, int slot2) {
 		ItemStack is = player.getInventory().getItem(slot2);
-		player.getInventory().setItem(slot2, player.getInventory().getItem(slot1));
-		player.getInventory().setItem(slot1, is);
+		ItemStack is2 = player.getInventory().getItem(slot1);
+		if (is2 != null && is2.getAmount() != 0) {
+			player.getInventory().setItem(slot2, is2);
+		} else {
+			player.getInventory().setItem(slot2, null);
+		}
+		
+		if (is != null && is.getAmount() != 0) {
+			player.getInventory().setItem(slot1, is);
+		} else {
+			player.getInventory().setItem(slot1, null);
+		}
 	}
 
 	public static void switchToItems(Player player, Material m) {

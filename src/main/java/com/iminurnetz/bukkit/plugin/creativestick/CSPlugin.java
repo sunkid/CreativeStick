@@ -26,7 +26,6 @@ import com.iminurnetz.bukkit.plugin.BukkitPlugin;
 import com.iminurnetz.bukkit.plugin.util.MessageUtils;
 import com.iminurnetz.bukkit.plugin.util.PluginLogger;
 import com.iminurnetz.bukkit.util.InventoryUtil;
-import com.iminurnetz.bukkit.util.Item;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 import com.iminurnetz.util.PersistentProperty;
 import com.iminurnetz.util.StringUtils;
@@ -201,6 +200,18 @@ public class CSPlugin extends BukkitPlugin {
 			return true;
 		}
 		
+		if (param.equalsIgnoreCase("announce")) {
+			boolean announce = StringUtils.isTrue(value);
+			stick.setAnnounce(announce);
+
+			if (announce)
+				MessageUtils.send(player, "announcements enabled!");
+			else
+				MessageUtils.send(player, "announcements disabled!");
+
+			return true;
+		}
+
 		return false;
 	}
 

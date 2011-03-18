@@ -33,6 +33,7 @@ public class Stick {
 	private Material tool;
 	private int undoAmount;
 	private boolean naturalDrops;
+	private boolean announce;
 	
 	private HashMap<Cancellable, BlockStateForSwitching> actionQueue = new HashMap<Cancellable, BlockStateForSwitching>();
 
@@ -45,12 +46,17 @@ public class Stick {
 		this.protectBottom = configService.doProtectBottom();
 		this.rightClickSwitch = configService.doRightClickSwitch();
 		this.naturalDrops = configService.doesNaturalDrops();
+		this.announce = configService.doAnnounce();
 		this.setDebug(configService.isDebug());
 		this.tool = configService.getTool();
 	}
 
 	public void addBlock(BlockState blockState) {
 		this.blocks.add(blockState);
+	}
+	
+	public boolean doAnnounce() {
+		return announce;
 	}
 
 	public boolean doProtectBottom() {
@@ -124,6 +130,10 @@ public class Stick {
 
 	public void setAmount(int amount) {
 		this.amount = amount;
+	}
+	
+	public void setAnnounce(boolean bool) {
+		this.announce = bool;
 	}
 
 	public void setArea(int area) {
@@ -199,7 +209,7 @@ public class Stick {
 		s.append(" with the following settings:\n");
 		s.append("Tool: ");
 		s.append(getToolName());
-		s.append("\n");
+		s.append(" | ");
 		s.append("Mode: ");
 		s.append(getModeAsString());
 		s.append("\n");
@@ -221,6 +231,9 @@ public class Stick {
 		s.append("\n");
 		s.append("Right-Click item switching: ");
 		s.append(doRightClickSwitch());
+		s.append("\n");
+		s.append("Announcements: ");
+		s.append(doAnnounce());
 		s.append("\n");
 		s.append("Debug mode: ");
 		s.append(isDebug());
