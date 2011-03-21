@@ -1,5 +1,11 @@
 Listed below are released versions and cumulative changes between them
 
+0.5.4
+
+* had pull request for bukkit accepted (http://bit.ly/g9Vawc), which now
+  actually does enable the advertised 'log:birch' item selection 
+* tested with craftbukkit build 552
+
 0.5.3
 
 * configuration to turn warnings off
