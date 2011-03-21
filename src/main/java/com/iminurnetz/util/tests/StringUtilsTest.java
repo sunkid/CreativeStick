@@ -1,7 +1,8 @@
 /**
  * LICENSING
  * 
- * This software is copyright by sunkid <sunkid.com> and is distributed under a dual license:
+ * This software is copyright by sunkid <sunkid@iminurnetz.com> and is
+ * distributed under a dual license:
  * 
  * Non-Commercial Use:
  *    This program is free software: you can redistribute it and/or modify
@@ -18,7 +19,7 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Commercial Use:
- *    Please contact sunkid.com
+ *    Please contact sunkid@iminurnetz.com
  */
 
 package com.iminurnetz.util.tests;
@@ -53,5 +54,13 @@ public class StringUtilsTest extends TestCase {
 		assertEquals(Arrays.asList("relevant interests", "relevant ideas"), StringUtils.closestMatch("RI*s", candidates));
 		assertEquals(Arrays.asList("relevant interests"), StringUtils.closestMatch("RI*ts", candidates));		
 		assertEquals(Arrays.asList("relevant interests"), StringUtils.closestMatch("R*ts", candidates));		
+	}
+	
+	public void testFirstToUpper() {
+		assertEquals("Noun", StringUtils.firstToUpper("nOun"));
+		assertEquals("123test", StringUtils.firstToUpper("123TEST"));
+		assertEquals("A", StringUtils.firstToUpper("a"));
+		assertNull(StringUtils.firstToUpper(null));
+		assertEquals("", StringUtils.firstToUpper(""));
 	}
 }

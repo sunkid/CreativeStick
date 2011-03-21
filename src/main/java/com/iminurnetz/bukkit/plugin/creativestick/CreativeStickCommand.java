@@ -1,7 +1,8 @@
 /**
  * LICENSING
  * 
- * This software is copyright by sunkid <sunkid.com> and is distributed under a dual license:
+ * This software is copyright by sunkid <sunkid@iminurnetz.com> and is
+ * distributed under a dual license:
  * 
  * Non-Commercial Use:
  *    This program is free software: you can redistribute it and/or modify
@@ -18,7 +19,7 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Commercial Use:
- *    Please contact sunkid.com
+ *    Please contact sunkid@iminurnetz.com
  */
 
 package com.iminurnetz.bukkit.plugin.creativestick;

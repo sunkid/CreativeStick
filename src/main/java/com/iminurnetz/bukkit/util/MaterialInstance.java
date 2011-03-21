@@ -21,24 +21,43 @@
  * Commercial Use:
  *    Please contact sunkid@iminurnetz.com
  */
+package com.iminurnetz.bukkit.util;
 
-package com.iminurnetz.bukkit.plugin.creativestick.tests;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.material.MaterialData;
 
-import java.io.File;
-import java.net.URL;
+public class MaterialInstance {
+	protected Material material;
+	protected MaterialData data;
 
-import junit.framework.TestCase;
+	public MaterialInstance(Block block) {
+		this.material = block.getState().getType();
+		this.data = block.getState().getData();
+	}
 
-import org.bukkit.util.config.Configuration;
+	public MaterialInstance(Material material) {
+		this(material, material.getNewData((byte) 0));
+	}
 
-import com.iminurnetz.bukkit.plugin.creativestick.ConfigurationService;
+	public MaterialInstance(Material material, MaterialData data) {
+		this.material = material;
+		this.data = data;
+	}
 
-public class ConfigurationServiceTest extends TestCase {
-	public void testVersion() {
-		URL topDir = getClass().getResource("/");
-		File configFile = new File(topDir.getFile(), "../src/main/resources/config.yml");
-		Configuration config = new Configuration(configFile);
-		config.load();
-		assertEquals(config.getString("settings.version", ""), ConfigurationService.LAST_CHANGED_IN_VERSION);
+	public MaterialData getData() {
+		return data;
+	}
+	
+	public Material getMaterial() {
+		return material;
+	}
+	
+	public void setData(MaterialData data) {
+		this.data = data;
+	}
+	
+	public void setMaterial(Material material) {
+		this.material = material;
 	}
 }

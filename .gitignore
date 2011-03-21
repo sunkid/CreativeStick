@@ -4,6 +4,9 @@
 build/
 dist/
 src/main/resources/plugin.yml
-src/main/java/com/iminurnetz/bukkit/plugin/accesslog/*
+src/main/java/com/iminurnetz/bukkit/plugin/*
+!src/main/java/com/iminurnetz/bukkit/plugin/creativestick
+!src/main/java/com/iminurnetz/bukkit/plugin/util/*
+!src/main/java/com/iminurnetz/bukkit/plugin/BukkitPlugin.java
 release/*.zip
 reports/

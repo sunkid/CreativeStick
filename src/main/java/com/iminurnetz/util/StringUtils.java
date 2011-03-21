@@ -1,7 +1,8 @@
 /**
  * LICENSING
  * 
- * This software is copyright by sunkid <sunkid.com> and is distributed under a dual license:
+ * This software is copyright by sunkid <sunkid@iminurnetz.com> and is
+ * distributed under a dual license:
  * 
  * Non-Commercial Use:
  *    This program is free software: you can redistribute it and/or modify
@@ -18,7 +19,7 @@
  *    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Commercial Use:
- *    Please contact sunkid.com
+ *    Please contact sunkid@iminurnetz.com
  */
 
 package com.iminurnetz.util;
@@ -142,5 +143,12 @@ public class StringUtils {
 
 	public static String join(String joiner, String[] toJoin, int start) {
 		return join(joiner, Arrays.asList(toJoin), start);
+	}
+	
+	public static String firstToUpper(String word) {
+		if (word == null) return word;
+		if (word.length() < 2)
+			return word.toUpperCase();
+	    return word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase();
 	}
 }

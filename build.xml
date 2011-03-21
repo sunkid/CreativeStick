@@ -93,6 +93,7 @@
 
 	<target name="release" depends="test,jarfile" description="generate a releaseable jar file">
 		<copy file="${dist}/${project}-${DSTAMP}.jar" tofile="${release}/${project}-DEBUG.jar" />
+		<exec executable="util/addLicense.pl" />
 		<antcall target="clean" />
 		<antcall target="dist" />
 		<copy file="${dist}/${project}-${DSTAMP}.jar" tofile="${release}/${project}.jar" />
