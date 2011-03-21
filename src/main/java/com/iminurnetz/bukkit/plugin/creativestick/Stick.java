@@ -1,4 +1,4 @@
-package com.nijikokun.bukkit.istick;
+package com.iminurnetz.bukkit.plugin.creativestick;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,7 +9,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.event.Cancellable;
 import org.bukkit.material.MaterialData;
 
-import com.iminurnetz.bukkit.plugin.creativestick.ConfigurationService;
 import com.iminurnetz.bukkit.util.Item;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 

@@ -1,4 +1,4 @@
-package com.nijikokun.bukkit.istick;
+package com.iminurnetz.bukkit.plugin.creativestick;
 
 import java.io.File;
 import java.io.IOException;

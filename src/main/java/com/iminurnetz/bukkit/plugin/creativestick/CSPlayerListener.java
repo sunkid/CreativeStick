@@ -52,7 +52,6 @@ import com.iminurnetz.bukkit.plugin.util.MessageUtils;
 import com.iminurnetz.bukkit.util.Item;
 import com.iminurnetz.bukkit.util.LocationUtil;
 import com.iminurnetz.bukkit.util.MaterialUtils;
-import com.nijikokun.bukkit.istick.Stick;
 
 public class CSPlayerListener extends PlayerListener {
 	public static CSPlugin plugin;

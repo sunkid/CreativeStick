@@ -52,7 +52,6 @@ import com.iminurnetz.bukkit.util.InventoryUtil;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 import com.iminurnetz.util.PersistentProperty;
 import com.iminurnetz.util.StringUtils;
-import com.nijikokun.bukkit.istick.Stick;
 
 public class CSPlugin extends BukkitPlugin {
 	public static ArrayList<Player> drop = new ArrayList<Player>();
