@@ -2,11 +2,12 @@
 	<description>
 		Project build file
     </description>
-	<property name="src" location="src/main/java" />
-	<property name="build" location="build" />
-	<property name="dist" location="dist" />
-	<property name="release" location="release" />
-	<property name="resources" location="src/main/resources" />
+	<property name="src" location="../src/java" />
+	<property name="srcbp" location="src/java" />
+	<property name="build" location="bin" />
+	<property name="dist" location="../dist" />
+	<property name="release" location="../release" />
+	<property name="resources" location="../src/resources" />
 	<property name="test.reports" value="reports" />
 	<property file="${resources}/version.properties" />
 
@@ -27,6 +28,9 @@
 
 	<target name="compile" depends="init" description="compile the source ">
 		<echo>Compiling ${project} v${version}.${minor_version}</echo>
+		<javac srcdir="${srcbp}" destdir="${build}">
+			<classpath refid="classpath" />
+		</javac>
 		<javac srcdir="${src}" destdir="${build}">
 			<classpath refid="classpath" />
 		</javac>
@@ -35,6 +39,9 @@
 
 	<target name="debug-compile" depends="clean, init" description="compile the source with debug">
 		<echo>Compiling ${project} v${version}.${minor_version} DEBUG</echo>
+		<javac srcdir="${srcbp}" destdir="${build}" debug="on">
+			<classpath refid="classpath" />
+		</javac>
 		<javac srcdir="${src}" destdir="${build}" debug="on">
 			<classpath refid="classpath" />
 		</javac>
@@ -77,7 +84,6 @@
 		<jar jarfile="${dist}/${project}-${DSTAMP}.jar">
 			<fileset dir="${build}">
 				<exclude name="**/tests/**" />
-				<exclude name="**/accesslog/**"/>
 				<exclude name="**/playground/**"/>
 			</fileset>
 			<fileset dir="${release}">

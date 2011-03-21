@@ -27,11 +27,14 @@ my $license =<<LICENSE_TXT;
  */
 LICENSE_TXT
 
+my @dirs = ();
 my $dir = $0;
 $dir =~ s/\/[^\/]*//;
-$dir .= "/../src/main/java/com/iminurnetz";
+push @dirs, $dir . "/../../src/java/com/iminurnetz";
+push @dirs, $dir . "/../src/java/com/iminurnetz";
 
-find(\&wanted, $dir);
+
+find(\&wanted, @dirs);
 
 my $inLicense;
 my $lines;
