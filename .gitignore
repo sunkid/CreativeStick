@@ -1,9 +1,6 @@
 .settings
 .classpath
 .project
-build/
 dist/
-src/main/resources/plugin.yml
-src/main/java/com/iminurnetz/bukkit/plugin/accesslog/*
+src/resources/plugin.yml
 release/*.zip
-reports/

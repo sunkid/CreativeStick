@@ -1,17 +1,13 @@
-CreativeStick v0.5.4
+=====================================================
+Bukkit Plugin - a bukkit plugin development framework
+=====================================================
+By sunkid <sunkid@iminurnetz.com>
 
-2011/03/18 10:44
+Licensing
+_________
 
-INSTALL and UPGRADE
-
-1. Copy the included jar file to your server's plugin directory
-2. Reload your server
-3. Change any configuration in plugins/CreativeStick/config.yml as neccessary
-4. Reload your server
-
-LICENSING
-
-This software is copyright by sunkid <sunkid@iminurnetz.com> and is distributed under a dual license:
+This software is copyright by sunkid <sunkid@iminurnetz.com> and is
+distributed under a dual license:
 
 Non-Commercial Use:
     This program is free software: you can redistribute it and/or modify
