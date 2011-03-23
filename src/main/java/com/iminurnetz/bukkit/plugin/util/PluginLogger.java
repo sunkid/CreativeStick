@@ -29,6 +29,8 @@ public class PluginLogger {
 		
 		if (logger != null) {
 			inited = true;
+		} else {
+			logger = Logger.getLogger("Minecraft");
 		}
 	}
 	
@@ -36,13 +38,14 @@ public class PluginLogger {
 		if (!inited) {
 			init();
 		}
-		
-		if (!inited) {
-			Logger.getLogger("Minecraft").log(level, prefix + msg);
-			return;
-		}
-
 		logger.log(level, prefix + msg);
+	}
+
+	public void log(Level level, String msg, Exception e) {
+		if (!inited) {
+			init();
+		}
+		logger.log(level, prefix + msg, e);
 	}
 
 	public void log(String msg) {
