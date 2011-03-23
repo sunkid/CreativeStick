@@ -2,6 +2,10 @@ Listed below are released versions and cumulative changes between them
 
 @version@.@minor_version@
 
+* fix for permission bug
+
+0.5.4
+
 * license cleanup
 * had pull request for bukkit accepted (http://bit.ly/g9Vawc), which now
   actually does enable the advertised 'log:birch' item selection 

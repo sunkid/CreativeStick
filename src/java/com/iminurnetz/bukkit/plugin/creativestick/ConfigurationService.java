@@ -159,23 +159,11 @@ public class ConfigurationService {
 		if (h.usesOwnPermissions()) {
 			List<String> users = config.getKeys(PERMISSIONS_TAG);
 			if (users != null) {
-				// a map of a List of users for each permission
-				Map<String, String> perms = new HashMap<String,String>();
 				for (String user : users) {
 					plugin.log("setting permissions for " + user);
-					List<String> confPerms = config.getStringList(PERMISSIONS_TAG + "." + user, new ArrayList<String>());
-					for (String p : confPerms) {
-						String u = perms.get(p);
-						if (u == null)
-							u = user;
-						else
-							u = u + "," + user;
-						perms.put(p, u);
-					}
-				}
-				
-				for (String p : perms.keySet()) {
-					h.addPermission(p, perms.get(p));
+					List<String> confPerms = config.getStringList(PERMISSIONS_TAG + "." + user, new ArrayList<String>());				
+					for (String p : confPerms)
+						h.addPermission(user, p);
 				}
 			}
 			
