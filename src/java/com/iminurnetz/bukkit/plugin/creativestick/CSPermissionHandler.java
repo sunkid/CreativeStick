@@ -69,16 +69,19 @@ public class CSPermissionHandler implements PermissionHandler {
 		if (!perms.contains(permission) && !perms.contains(CAN_DO_EVERYTHING))
 			perms.add(permission);
 		
+		System.err.println("perm for " + player + " " + perms);
 		permissions.put(player, perms);
 	}
 
 	public boolean permission(Player player, String permission) {
 		String name = player.getName();
+		System.err.println("perm for " + player.getName() + " " + permissions.containsKey(name));
 		
 		if (!permissions.containsKey(name)) {
 			return false;
 		}
 
+		System.err.println("perm for " + player.getName() + " " + permissions.get(name).contains(permission) + " or " +  permissions.get(name).contains(CAN_DO_EVERYTHING));
 		return permissions.get(name).contains(permission) || permissions.get(name).contains(CAN_DO_EVERYTHING);
 	}
 
@@ -86,7 +89,9 @@ public class CSPermissionHandler implements PermissionHandler {
 		if (enableOps && player.isOp())
 			return true;
 		
-		return permissionHandler.hasPermission(player, permission);
+		return usesOwnPermissions() ? 
+				permission(player, permission) :
+				permissionHandler.hasPermission(player, permission);
 	}
 
 	public boolean canUse(Player player) {
