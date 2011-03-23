@@ -143,4 +143,11 @@ public class StringUtils {
 	public static String join(String joiner, String[] toJoin, int start) {
 		return join(joiner, Arrays.asList(toJoin), start);
 	}
+	
+	public static String firstToUpper(String word) {
+		if (word == null) return word;
+		if (word.length() < 2)
+			return word.toUpperCase();
+	    return word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase();
+	}
 }

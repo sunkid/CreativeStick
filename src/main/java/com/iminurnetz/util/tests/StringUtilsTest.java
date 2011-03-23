@@ -54,4 +54,12 @@ public class StringUtilsTest extends TestCase {
 		assertEquals(Arrays.asList("relevant interests"), StringUtils.closestMatch("RI*ts", candidates));		
 		assertEquals(Arrays.asList("relevant interests"), StringUtils.closestMatch("R*ts", candidates));		
 	}
+	
+	public void testFirstToUpper() {
+		assertEquals("Noun", StringUtils.firstToUpper("nOun"));
+		assertEquals("123test", StringUtils.firstToUpper("123TEST"));
+		assertEquals("A", StringUtils.firstToUpper("a"));
+		assertNull(StringUtils.firstToUpper(null));
+		assertEquals("", StringUtils.firstToUpper(""));
+	}
 }
