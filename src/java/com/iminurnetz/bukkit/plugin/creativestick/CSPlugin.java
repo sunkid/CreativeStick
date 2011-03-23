@@ -484,12 +484,12 @@ public class CSPlugin extends BukkitPlugin {
 		PluginManager pm = server.getPluginManager();
 
 		pm.registerEvent(Event.Type.PLAYER_ANIMATION, playerListener, Priority.Lowest, this);
-		pm.registerEvent(Event.Type.PLAYER_ITEM, playerListener, Priority.Lowest, this);
+		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Lowest, this);
 		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_ITEM_HELD, playerListener, Priority.Monitor, this);
 		// pm.registerEvent(Event.Type.BLOCK_BREAK, eventListener, Priority.Highest, this);
 		// pm.registerEvent(Event.Type.BLOCK_IGNITE, eventListener, Priority.Highest, this);
-		pm.registerEvent(Event.Type.BLOCK_PLACED, eventListener, Priority.Highest, this);
+		pm.registerEvent(Event.Type.BLOCK_PLACE, eventListener, Priority.Highest, this);
 	}
 
 	public void sendToggleMessage(Player player, Stick stick) {

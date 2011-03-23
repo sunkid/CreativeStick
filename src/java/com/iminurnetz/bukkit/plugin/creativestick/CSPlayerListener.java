@@ -39,10 +39,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Type;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerEvent;
-import org.bukkit.event.player.PlayerItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.inventory.ItemStack;
@@ -59,7 +60,8 @@ public class CSPlayerListener extends PlayerListener {
 	public CSPlayerListener(CSPlugin instance) {
 		plugin = instance;
 	}
-
+    
+	@Override
     public void onPlayerJoin(PlayerEvent event) {
     	checkStatus(event.getPlayer());
     }
@@ -67,6 +69,7 @@ public class CSPlayerListener extends PlayerListener {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private static ScheduledFuture<?> checkerHandle = null;
 
+    @Override
     public void onItemHeldChange(PlayerItemHeldEvent event) {
     	// need to wait for the itemChange to finish
     	final Player p = event.getPlayer();
@@ -88,6 +91,7 @@ public class CSPlayerListener extends PlayerListener {
     	}
     }
     
+    @Override
 	public void onPlayerAnimation(PlayerAnimationEvent event) {
 		int mode = 0;
 		Player player = event.getPlayer();
@@ -135,7 +139,7 @@ public class CSPlayerListener extends PlayerListener {
 				return;
 			}
 
-			actionEvent = new BlockPlaceEvent(Type.BLOCK_PLACED, targetedBlock, null, placedAgainstBlock, new ItemStack(stick.getTool()), player, true);
+			actionEvent = new BlockPlaceEvent(Type.BLOCK_PLACE, targetedBlock, null, placedAgainstBlock, new ItemStack(stick.getTool()), player, true);
 
 			BlockState state = targetedBlock.getState();
 			state.setType(mode == Stick.REMOVE_MODE ? Material.AIR : item.getMaterial());
@@ -189,12 +193,16 @@ public class CSPlayerListener extends PlayerListener {
 		}
 	}
 
-	public void onPlayerItem(PlayerItemEvent event) {
+    @Override
+	public void onPlayerInteract(PlayerInteractEvent event) {
+    	if (event.getAction() != Action.RIGHT_CLICK_AIR) { // && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+    		return;
+    	}
+		
 		Player player = event.getPlayer();
 		Stick stick = plugin.getStick(player);
 
 		if (plugin.canUse(player, stick)) {
-
 			List<Block> targetBlocks = player.getLastTwoTargetBlocks(stick.getIgnore(), stick.getDistance());
 			Block targetedBlock = targetBlocks.get(targetBlocks.size() - 1);
 			if (targetedBlock == null) {
@@ -215,7 +223,7 @@ public class CSPlayerListener extends PlayerListener {
 			}
 
 			// BlockBreakEvent doesn't seem to do it
-			BlockPlaceEvent bpe = new BlockPlaceEvent(Type.BLOCK_PLACED, targetedBlock, null, targetBlocks.get(0), new ItemStack(stick.getTool()), player, true); 
+			BlockPlaceEvent bpe = new BlockPlaceEvent(Type.BLOCK_PLACE, targetedBlock, null, targetBlocks.get(0), new ItemStack(stick.getTool()), player, true); 
 
 			BlockState state = targetedBlock.getState();
 			state.setType(Material.AIR);
