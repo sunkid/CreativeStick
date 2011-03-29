@@ -24,6 +24,11 @@
 
 package com.iminurnetz.bukkit.permissions;
 
+import java.util.Collection;
+
+import org.anjocaido.groupmanager.data.Group;
+import org.anjocaido.groupmanager.data.User;
+import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.anjocaido.groupmanager.dataholder.worlds.WorldsHolder;
 import org.bukkit.entity.Player;
 
@@ -39,4 +44,36 @@ public class GroupManagerPermissions implements PermissionHandler {
 	public boolean hasPermission(Player player, String permission) {
 		return worldHolder.getWorldPermissions(player).permission(player, permission);
 	}
+	
+	public boolean setGroup(String name, String newGroup) {
+	    WorldDataHolder holder = worldHolder.getWorldDataByPlayerName(name);
+	    if (holder != null) {
+	        return setGroup(holder.getUser(name), newGroup, holder.getName());
+	    }
+	    
+	    return false;
+	}
+	
+	public boolean setGroup(Player player, String newGroup) {
+	    User u = worldHolder.getWorldData(player).getUser(player.getName());
+	    return setGroup(u, newGroup, player.getWorld().getName());
+	}
+	
+	public boolean setGroup(User u, String newGroup, String world) {
+	    System.err.println(u.getName() + " in " + u.getGroupName() + " on " + world + " moving to " + newGroup);
+	    Group group = worldHolder.getWorldData(world).getGroup(newGroup);
+ 	    if (group != null) {
+	        u.setGroup(group);
+	        u.flagAsChanged();
+	        return true;
+	    }
+	    
+	    return false;
+	}
+
+    @Override
+    public String getGroup(Player player) {
+        User u = worldHolder.getWorldData(player).getUser(player.getName());
+        return u.getGroup().getName();
+    }
 }
