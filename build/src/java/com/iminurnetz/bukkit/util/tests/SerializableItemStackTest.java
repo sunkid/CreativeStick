@@ -21,33 +21,30 @@
  * Commercial Use:
  *    Please contact sunkid@iminurnetz.com
  */
-package com.iminurnetz.bukkit.util;
+package com.iminurnetz.bukkit.util.tests;
 
-import java.io.Serializable;
-
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public class PersistentItemStack implements Serializable {
+import com.iminurnetz.bukkit.util.SerializableItemStack;
 
-	private static final long serialVersionUID = 1L;
+import junit.framework.TestCase;
 
-	private final String material;
-	private final short damage;
-	private final int amount;
-	private final byte data;
+public class SerializableItemStackTest extends TestCase {
+    public void testConversion() {
+        ItemStack s = new ItemStack(Material.WOOL, 10);
+        s.setData(Material.WOOL.getNewData(DyeColor.BLUE.getData()));
+        s.setDurability((short)10);
+        
+        SerializableItemStack ss = new SerializableItemStack(s);
+        
+        assertEquals("Serialization succeeded", s.getData().getData(), DyeColor.BLUE.getData());
+        assertEquals("Serialization succeeded completely", s.getDurability(), (short) 10);
 
-	public PersistentItemStack(ItemStack stack) {
-		this.material = stack.getType().name();
-		this.damage = stack.getDurability();
-		this.amount = stack.getAmount();
-		this.data = stack.getData() != null ? stack.getData().getData()
-				: (byte) 0;
-	}
-
-	public ItemStack getStack() {
-		return new ItemStack(Material.getMaterial(material), amount, damage,
-				data);
-	}
-
+        ItemStack s2 = ss.getStack();
+        assertEquals("Conversion succeeded", s, s2);
+        assertEquals("Data is retained", s.getData().getData(), s2.getData().getData());
+        assertEquals("Damage is retained", s.getDurability(), s2.getDurability());
+    }
 }
