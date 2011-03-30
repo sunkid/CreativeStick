@@ -23,6 +23,7 @@
  */
 package com.iminurnetz.bukkit.plugin.creativestick;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -37,14 +38,16 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Type;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -62,7 +65,7 @@ public class CSPlayerListener extends PlayerListener {
 	}
     
 	@Override
-    public void onPlayerJoin(PlayerEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
     	checkStatus(event.getPlayer());
     }
 
@@ -92,15 +95,25 @@ public class CSPlayerListener extends PlayerListener {
     }
     
     @Override
-	public void onPlayerAnimation(PlayerAnimationEvent event) {
-		int mode = 0;
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        int mode = 0;
 		Player player = event.getPlayer();
 		Stick stick = null;
 
 		stick = plugin.getStick(player);
 		mode = stick.getMode();
+		
+		boolean isRightClick = false;
+		
+		if (event.getAction() == Action.RIGHT_CLICK_AIR || 
+            event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+		    mode = Stick.REMOVE_MODE;
+		    isRightClick = true;
+		}
 
 		if (plugin.canUse(player, stick)) {
+		    
+		    event.setCancelled(true);
 
 			List<Block> targetBlocks = player.getLastTwoTargetBlocks(stick.getIgnore(), stick.getDistance());
 			Block targetedBlock = null;
@@ -116,7 +129,7 @@ public class CSPlayerListener extends PlayerListener {
 				}
 			}
 			
-			Event actionEvent = null;
+			BlockEvent actionEvent = null;
 
 			if (mode == Stick.REPLACE_MODE || mode == Stick.REMOVE_MODE) {
 				targetedBlock = targetBlocks.get(1);
@@ -139,11 +152,10 @@ public class CSPlayerListener extends PlayerListener {
 				return;
 			}
 
-			actionEvent = new BlockPlaceEvent(Type.BLOCK_PLACE, targetedBlock, null, placedAgainstBlock, new ItemStack(stick.getTool()), player, true);
 
-			BlockState state = targetedBlock.getState();
-			state.setType(mode == Stick.REMOVE_MODE ? Material.AIR : item.getMaterial());
-			
+			BlockState after = targetedBlock.getState();
+            after.setType(mode == Stick.REMOVE_MODE ? Material.AIR : item.getMaterial());
+
 			MaterialData data = null;
 			if (mode == Stick.REMOVE_MODE) {
 				data = Material.AIR.getNewData((byte) 0);
@@ -172,68 +184,58 @@ public class CSPlayerListener extends PlayerListener {
 			}
 			
 			if (data != null)
-				state.setData(data);
+				after.setData(data);
 			
-			stick.enqueue((Cancellable)actionEvent, state);
-
-			if (MaterialUtils.isSameMaterial(item.getMaterial(), Material.FIRE)) {
-				// this also does not seem to fire
-				// actionEvent = new BlockIgniteEvent(targetedBlock, IgniteCause.FLINT_AND_STEEL, player);
-			} 
+            BlockState before = targetedBlock.getState();
+			if (mode == Stick.REMOVE_MODE) {
+			    actionEvent = new BlockBreakEvent(targetedBlock, player);
+			} else if (MaterialUtils.isSameMaterial(item.getMaterial(), Material.FIRE)) {
+                actionEvent = new BlockIgniteEvent(targetedBlock, IgniteCause.FLINT_AND_STEEL, player);
+            } else {
+			    actionEvent = new BlockPlaceEvent(after.getBlock(), before, placedAgainstBlock, new ItemStack(stick.getTool()), player, true);
+			}
 			
 			plugin.getServer().getPluginManager().callEvent(actionEvent);
 			
-			/* BlockBreakEvent don't seem to work yet
-			if (block != null) {
-				BlockBreakEvent bbe = new BlockBreakEvent(block, player);
-				plugin.getServer().getPluginManager().callEvent(bbe);
-				log("fired BlockBreakEvent");
+			if (!((Cancellable)actionEvent).isCancelled()) {
+			    if (isRightClick) {
+			        stick.setDoItemSwitch(true);
+			    }
+			    plugin.takeAction(before, after, player);
 			}
-			*/
 		}
 	}
-
+    
     @Override
-	public void onPlayerInteract(PlayerInteractEvent event) {
-    	if (event.getAction() != Action.RIGHT_CLICK_AIR) { // && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-    		return;
-    	}
-		
-		Player player = event.getPlayer();
-		Stick stick = plugin.getStick(player);
-
-		if (plugin.canUse(player, stick)) {
-			List<Block> targetBlocks = player.getLastTwoTargetBlocks(stick.getIgnore(), stick.getDistance());
-			Block targetedBlock = targetBlocks.get(targetBlocks.size() - 1);
-			if (targetedBlock == null) {
-				plugin.log("onPlayerItem: block is null... ignored event");
-				return;
-			}
-
-			if (targetedBlock.getLocation().getBlockY() == 0 && stick.doProtectBottom()) {
-				plugin.log(Level.WARNING, "Player " + player.getDisplayName() + " hit rock bottom!");
-				return;
-			}
-			
-			// this shouldn't really happen!
-			if (LocationUtil.isSameLocation(player, targetedBlock)) {
-				if (stick.isDebug()) {
-					MessageUtils.send(player, "** boink **");
-				}
-			}
-
-			// BlockBreakEvent doesn't seem to do it
-			BlockPlaceEvent bpe = new BlockPlaceEvent(Type.BLOCK_PLACE, targetedBlock, null, targetBlocks.get(0), new ItemStack(stick.getTool()), player, true); 
-
-			BlockState state = targetedBlock.getState();
-			state.setType(Material.AIR);
-			state.setData(Material.AIR.getNewData((byte) 0));
-			stick.enqueue(bpe, state, true);
-			
-			plugin.getServer().getPluginManager().callEvent(bpe);
-			
-			/* BlockBreakEvent bbe = new BlockBreakEvent(targetedBlock, player);
-			plugin.getServer().getPluginManager().callEvent(bbe); */
-		}
-	}
+    public void onPlayerAnimation(PlayerAnimationEvent event) {
+        final Player player = event.getPlayer();
+        final Stick stick = plugin.getStick(player);
+        if (plugin.canUse(player, stick)) {
+            // try to catch the missing PLAYER_INTERACT
+            Thread t = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                    
+                    long now = new Date().getTime();
+    
+                    if (now - stick.getLastActionTakenAt() > 20) {
+                        Block target = player.getTargetBlock(null, 500);
+                        PlayerInteractEvent pie = new PlayerInteractEvent(
+                                player,
+                                target.getType() == Material.AIR ? Action.LEFT_CLICK_AIR : Action.LEFT_CLICK_BLOCK, 
+                                player.getItemInHand(), target,
+                                target.getFace(player.getEyeLocation().getBlock()));
+                        plugin.log("Calling onPlayerInteract");
+                        onPlayerInteract(pie);
+                    }
+                }
+            });
+            t.setDaemon(true);
+            t.start();
+        }
+    }
 }

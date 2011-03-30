@@ -36,10 +36,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -66,7 +64,6 @@ public class CSPlugin extends BukkitPlugin {
 
 	protected ConfigurationService configLoader;
 
-	private final BlockListener eventListener = new CSEventListener(this);
 	private final PlayerListener playerListener = new CSPlayerListener(this);
 
 	public CSPlugin() {
@@ -483,13 +480,10 @@ public class CSPlugin extends BukkitPlugin {
 	private void registerEvents() {
 		PluginManager pm = server.getPluginManager();
 
-		pm.registerEvent(Event.Type.PLAYER_ANIMATION, playerListener, Priority.Lowest, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Lowest, this);
+		pm.registerEvent(Event.Type.PLAYER_ANIMATION, playerListener, Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Highest, this);
 		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_ITEM_HELD, playerListener, Priority.Monitor, this);
-		// pm.registerEvent(Event.Type.BLOCK_BREAK, eventListener, Priority.Highest, this);
-		// pm.registerEvent(Event.Type.BLOCK_IGNITE, eventListener, Priority.Highest, this);
-		pm.registerEvent(Event.Type.BLOCK_PLACE, eventListener, Priority.Highest, this);
 	}
 
 	public void sendToggleMessage(Player player, Stick stick) {
@@ -507,48 +501,35 @@ public class CSPlugin extends BukkitPlugin {
 		permissionHandler = configLoader.getPermissionHandler();
 	}
 
-	public synchronized void takeAction(Cancellable event, Player player) {
-		Stick stick = getStick(player);
-		BlockState after = stick.dequeue(event);
-		
-		if (after == null) {
-			return;
-		}
+	public synchronized void takeAction(BlockState before, BlockState after, Player player) {
+        Stick stick = getStick(player);
+        if (stick.doItemSwitch() && stick.setItem(before.getType(), before.getData())) {
+            MessageUtils.send(player, "You are now working with "
+                    + MaterialUtils.getFormattedName(stick.getItem()));
+        }
 
-		if (event.isCancelled()) {
-			if (isDebug(player))
-				log("cancelled last action of " + player.getDisplayName());
-		} else {
-			
-			if (stick.didItemSwitch()) {
-				MessageUtils.send(player, "You are now working with " + MaterialUtils.getFormattedName(stick.getItem()));
-			}
-			
-			
-			Block target = after.getBlock();
-			BlockState before = target.getState();
-			
-			// this seems to be necessary for working with water?
-			target.setType(Material.AIR);
-			target.setData((byte) 0);
-			
-			target.setType(after.getType());
-			MaterialData data = after.getData();
-			if (data != null) {
-				target.setData(data.getData());	
-			}
-			
-			
-			if (stick.isDebug()) {
-				log(player.getDisplayName() + " converted a block of " + MaterialUtils.getFormattedName(before.getType()) +
-						" to " + MaterialUtils.getFormattedName(after.getType()));
-			}
-			
-			stick.addBlock(before);
-			if (!MaterialUtils.isSameMaterial(before.getType(), Material.AIR)) {
-				giveItems(player, before);
-			}
-		}
+        Block target = after.getBlock();
+
+        // this seems to be necessary for working with water?
+        target.setType(Material.AIR);
+        target.setData((byte) 0);
+
+        target.setType(after.getType());
+        MaterialData data = after.getData();
+        if (data != null) {
+            target.setData(data.getData());
+        }
+
+        if (stick.isDebug()) {
+            log(player.getDisplayName() + " converted a block of "
+                    + MaterialUtils.getFormattedName(before.getType()) + " to "
+                    + MaterialUtils.getFormattedName(after.getType()));
+        }
+
+        stick.addBlock(before);
+        if (!MaterialUtils.isSameMaterial(before.getType(), Material.AIR)) {
+            giveItems(player, before);
+        }
 	}
 
 	public void toggle(Player player, Stick stick) {

@@ -6,7 +6,7 @@
 # CHANGE THE VERSION IN YOUR config.yml TO THE ONE BELOW.
 settings:
     # version of the last update of the config file
-    version: 0.5.3
+    version: 0.6.0
 
     # this will allow all ops by default to use the plugin
     # NOTE: it overrides GroupManager or Permissions system!
@@ -27,6 +27,9 @@ settings:
     user:
         # how many steps to undo by default
         undo: 5
+        
+        # maximum undo steps to allow
+        max-undos: 500
 
         # set to false if users are allowed to create blue holes
         protect-bottom: true

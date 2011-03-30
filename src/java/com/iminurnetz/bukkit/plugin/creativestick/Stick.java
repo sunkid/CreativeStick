@@ -23,13 +23,12 @@
  */
 package com.iminurnetz.bukkit.plugin.creativestick;
 
-import java.util.HashMap;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Vector;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockState;
-import org.bukkit.event.Cancellable;
 import org.bukkit.material.MaterialData;
 
 import com.iminurnetz.bukkit.util.Item;
@@ -56,10 +55,10 @@ public class Stick {
 	private int undoAmount;
 	private boolean naturalDrops;
 	private boolean announce;
+	private int maxUndos;
+	private long lastActionTakenAt;
 	
-	private HashMap<Cancellable, BlockStateForSwitching> actionQueue = new HashMap<Cancellable, BlockStateForSwitching>();
-
-	public Stick(ConfigurationService configService) {
+    public Stick(ConfigurationService configService) {
 		this.ignore = configService.getIgnored();
 		this.enabled = configService.isEnabled();
 		this.drops = configService.doesDrop();
@@ -71,10 +70,16 @@ public class Stick {
 		this.announce = configService.doAnnounce();
 		this.setDebug(configService.isDebug());
 		this.tool = configService.getTool();
+		this.maxUndos = configService.getMaxUndos();
+		this.lastActionTakenAt = new Date().getTime();
 	}
 
 	public void addBlock(BlockState blockState) {
+	    this.lastActionTakenAt = new Date().getTime();
 		this.blocks.add(blockState);
+		if (blocks.size() > maxUndos) {
+		    blocks.remove(0);
+		}
 	}
 	
 	public boolean doAnnounce() {
@@ -176,31 +181,30 @@ public class Stick {
 
 	public boolean setItem(String item) {
 		try {
-			setItem(new Item(item));
+			return setItem(new Item(item));
 		} catch (InstantiationException e) {
 			return false;
 		}
-		
-		return true;
 	}
 
-	public void setItem(Material material) {
-		setItem(material, material.getNewData((byte) 0));
+	public boolean setItem(Material material) {
+		return setItem(material, material.getNewData((byte) 0));
 	}
 	
-	public void setItem(Item item) {
+    public boolean setItem(Material material, MaterialData data) {
+        return setItem(new Item(material, data));
+    }
+
+	public boolean setItem(Item item) {
+	    doItemSwitch = false;
 		if (!MaterialUtils.isSameItem(getItem(), item)) {
 			this.item = item;
-			didItemSwitch = true;
-		} else {
-			didItemSwitch = false;
+			return true;
 		}
+		
+		return false;
 	}
 	
-	public void setItem(Material material, MaterialData data) {
-		setItem(new Item(material, data));
-	}
-
 	public void setMode(int mode) {
 		this.mode = mode;
 	}
@@ -222,6 +226,10 @@ public class Stick {
 
 	public void setUndoAmount(int n) {
 		undoAmount = n;
+	}
+
+	public long getLastActionTakenAt() {
+	    return lastActionTakenAt;
 	}
 
 	public String showSettings() {
@@ -305,57 +313,14 @@ public class Stick {
 		return naturalDrops;
 	}
 
-	/**
-	 * Attempts to place a BlockState into this stick's action queue.
-	 * @param state the BlockState for the user's queued action
-	 * @return true on success, false otherwise
-	 */
-	public synchronized void enqueue(Cancellable event, BlockState state) {
-		enqueue(event, state, false);
+	private boolean doItemSwitch = false;
+	
+	public void setDoItemSwitch(boolean b) {
+	    doItemSwitch = b && doRightClickSwitch();
 	}
 	
-	private boolean didItemSwitch = false;
-	
-	/**
-	 * Attempts to place a BlockState into this stick's action queue and also specifies whether
-	 * to use it as the source for the next item to use. It actually does not switch the item
-	 * in use but delays that decision until dequeue is called.
-	 * @param state the BlockState for the user's queued action
-	 * @param forItemSwitching whether to use this blocks material for future actions
-	 * @return true on success, false otherwise
-	 */
-	public synchronized void enqueue(Cancellable event, BlockState state, boolean forItemSwitching) {
-		actionQueue.put(event, new BlockStateForSwitching(state, forItemSwitching && doRightClickSwitch()));
-	}
-
-	/**
-	 * Returns the next BlockState to act on. It also attempts to switch to this item if the enqueue
-	 * method was told to do so.
-	 * @param event 
-	 * @return the BlockState next in line or null if there are none.
-	 */
-	public synchronized BlockState dequeue(Cancellable event) {
-		BlockStateForSwitching bs4s = actionQueue.remove(event);
-		if (bs4s == null) {
-			return null;
-		}
-		
-		BlockState state = bs4s.state;
-		
-		Material blockMaterial = state.getBlock().getState().getType();
-		
-		didItemSwitch = bs4s.doSwitch;
-		
-		if (blockMaterial != null && bs4s.doSwitch) {
-			setItem(blockMaterial, state.getBlock().getState().getData());
-		}
-		return state;
-	}
-	
-
-	
-	public boolean didItemSwitch() {
-		return didItemSwitch;
+	public boolean doItemSwitch() {
+		return doItemSwitch;
 	}
 
 	public void onlyIgnore(Material material) {
@@ -363,14 +328,5 @@ public class Stick {
 		this.ignore = new HashSet<Byte>();
 		ignore(Material.AIR);
 		ignore(material);
-	}
-}
-
-class BlockStateForSwitching {
-	protected BlockState state;
-	protected boolean doSwitch;
-	protected BlockStateForSwitching(BlockState state, boolean doSwitch) {
-		this.state = state;
-		this.doSwitch = doSwitch;
 	}
 }

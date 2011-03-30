@@ -113,4 +113,9 @@ public class CSPermissionHandler implements PermissionHandler {
 		return canConfigureAll(player) || hasPermission(player, CAN_CONFIGURE_PERMISSION + "." + param.toLowerCase());
 	}
 
+    @Override
+    public String getGroup(Player player) {
+        return permissionHandler.getGroup(player);
+    }
+
 }

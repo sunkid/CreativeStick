@@ -53,7 +53,7 @@ public class ConfigurationService {
 	private BukkitPlugin plugin;
 	
 	// used to check the config file for updates
-	public static final String LAST_CHANGED_IN_VERSION = "0.5.3";
+	public static final String LAST_CHANGED_IN_VERSION = "0.6.0";
 	
 	// TODO convert to enums
 	// global settings
@@ -67,6 +67,7 @@ public class ConfigurationService {
 	public static final String USER_SETTINGS_TAG = SETTINGS_TAG + ".user";
 	
 	public static final int UNDO_AMOUNT = 5;
+    public static final int MAX_UNDOS = 500;
 	public static final int DISTANCE = 100;
 	public static final Material TOOL = Material.STICK;
 	public static final boolean PROTECT_BOTTOM = true;
@@ -291,4 +292,8 @@ public class ConfigurationService {
 		returnSet.add((byte) Material.AIR.getId());
 		return returnSet;
 	}
+
+    public int getMaxUndos() {
+        return config.getInt(USER_SETTINGS_TAG + ".max-undos", MAX_UNDOS);
+    }
 }
