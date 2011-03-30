@@ -222,14 +222,14 @@ public class CSPlayerListener extends PlayerListener {
                     
                     long now = new Date().getTime();
     
-                    if (now - stick.getLastActionTakenAt() > 20) {
+                    if (now - stick.getLastActionTakenAt() > 40) {
                         Block target = player.getTargetBlock(null, 500);
                         PlayerInteractEvent pie = new PlayerInteractEvent(
                                 player,
                                 target.getType() == Material.AIR ? Action.LEFT_CLICK_AIR : Action.LEFT_CLICK_BLOCK, 
                                 player.getItemInHand(), target,
                                 target.getFace(player.getEyeLocation().getBlock()));
-                        plugin.log("Calling onPlayerInteract");
+                        // plugin.log("Calling onPlayerInteract");
                         onPlayerInteract(pie);
                     }
                 }
