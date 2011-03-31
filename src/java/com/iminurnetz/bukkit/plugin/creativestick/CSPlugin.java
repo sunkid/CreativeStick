@@ -65,6 +65,17 @@ public class CSPlugin extends BukkitPlugin {
 	protected ConfigurationService configLoader;
 
 	private final PlayerListener playerListener = new CSPlayerListener(this);
+	
+	public int MIN_SERVER_VERSION = 556;
+    public int MAX_SERVER_VERSION = 605;
+    
+    public int getMinimumServerVersion() {
+        return this.MIN_SERVER_VERSION;
+    }
+
+    public int getMaximumServerVersion() {
+        return this.MAX_SERVER_VERSION;
+    }
 
 	public CSPlugin() {
 		super();
@@ -472,8 +483,8 @@ public class CSPlugin extends BukkitPlugin {
 	}
 	
 	@Override
-	public void onEnable() {
-		setup();
+	public void enablePlugin() {
+	    setup();
 		registerEvents();
 	}
 
