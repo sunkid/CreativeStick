@@ -23,25 +23,41 @@
  */
 package com.iminurnetz.bukkit.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
+import org.bukkit.inventory.PlayerInventory;
 
 public class InventoryUtil {
-	public static void giveItems(Player player, List<ItemStack> items) {
+    
+    public static void giveItems(Player player, List<ItemStack> items) {
 		for (ItemStack is : items) {
 			giveItems(player, is);
 		}
 	}
 
 	public static void giveItems(Player player, ItemStack stack) {
-		if (player.getInventory().firstEmpty() == -1)
+	    if (ArmorUtil.isArmor(stack) && !ArmorUtil.wearsArmor(player, stack)) {
+	        stack = ArmorUtil.setArmor(player, stack);
+	        if (stack == null) {
+	            return;
+	        }
+	    }
+	    
+	    if (player.getInventory().firstEmpty() == -1)
 			player.getWorld().dropItemNaturally(player.getLocation(), stack);
 		else {
 			player.getInventory().addItem(stack);
+			player.updateInventory();
 		}
 	}
 
@@ -92,4 +108,97 @@ public class InventoryUtil {
 		
 		switchItems(player, slot, player.getInventory().getHeldItemSlot());
 	}
+
+	/**
+	 * Check if a chest is part of a large chest and return the second part.
+	 * @param chest a {@link Chest} block to check
+	 * @return the second part of the large chest or null if there isn't one
+	 */
+    public static Chest getNeighborChest(Chest chest) {
+        for (BlockFace face : Arrays.asList(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST)) {
+            BlockState state = chest.getBlock().getRelative(face).getState();
+            if (state instanceof Chest) {
+                return (Chest) state;            
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Remove a set of materials from a player's inventory.
+     * @param player the player
+     * @param items a map of materials and number of items to be removed
+     * @return a list of items that were not removed
+     */
+    public static List<ItemStack> remove(Player player, HashMap<Material, Integer> items) {
+        ArrayList<ItemStack> stuff = new ArrayList<ItemStack>();
+        for (Material m : items.keySet()) {
+            ItemStack stack = MaterialUtils.getStack(m, items.get(m));
+            stuff.add(stack);
+        }
+        
+        return remove(player, stuff);
+    }
+
+    /**
+     * Remove a set of materials from a player's inventory.
+     * @param player the player
+     * @param items a list of ItemStacks to be removed
+     * @return a list of items that were not removed
+     */    
+    public static List<ItemStack> remove(Player player, List<ItemStack> items) {
+        ArrayList<ItemStack> notRemoved = new ArrayList<ItemStack>();
+        HashMap<Material, Integer> tmp = new HashMap<Material, Integer>();
+        int slot, toBeRemoved, n;
+        PlayerInventory inventory = player.getInventory();
+        ItemStack[] armor = player.getInventory().getArmorContents();
+        ItemStack posessions;
+        for (ItemStack stack : items) {
+            toBeRemoved = stack.getAmount();
+            while (toBeRemoved > 0) {
+                if (ArmorUtil.isArmor(stack) && ArmorUtil.wearsArmor(player, stack)) {
+                    ArmorUtil.remove(player, stack);
+                    toBeRemoved--;
+                } else {
+                    slot = inventory.first(stack.getType());
+                
+                    if (slot != -1) {
+                        posessions = inventory.getItem(slot);
+                        if (posessions.getAmount() > toBeRemoved) {
+                            posessions.setAmount(posessions.getAmount() - toBeRemoved);
+                            toBeRemoved = 0;
+                        } else {
+                            toBeRemoved -= posessions.getAmount();
+                            inventory.setItem(slot, null);
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+            
+            n = 0;
+            if (toBeRemoved > 0) {
+                n = tmp.get(stack.getType()) == null ? 0 : tmp.get(stack.getType());
+                tmp.put(stack.getType(), n + toBeRemoved);
+            }
+        }
+        
+        for (Material m : tmp.keySet()) {
+            ItemStack stack = MaterialUtils.getStack(m, tmp.get(m));
+            notRemoved.add(stack);
+        }
+        
+        return notRemoved;
+    }
+
+    public static List<ItemStack> getInventoryContents(Inventory inventory) {
+        ArrayList<ItemStack> contents = new ArrayList<ItemStack>();
+        for (ItemStack stack : inventory.getContents()) {
+            if (stack != null) {
+                contents.add(stack);
+            }
+        }
+        return contents;
+    }
 }
