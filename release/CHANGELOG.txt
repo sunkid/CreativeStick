@@ -1,6 +1,6 @@
 Listed below are released versions and cumulative changes between them
 
-0.6.1
+0.6.2
 
 * fix for permission bug
 
