@@ -1,6 +1,6 @@
-CreativeStick v0.6.2
+CreativeStick v0.6.4
 
-2011/03/31 21:10
+2011/04/28 11:16
 
 INSTALL and UPGRADE
 

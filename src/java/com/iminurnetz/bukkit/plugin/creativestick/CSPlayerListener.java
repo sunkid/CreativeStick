@@ -116,6 +116,13 @@ public class CSPlayerListener extends PlayerListener {
 		    event.setCancelled(true);
 
 			List<Block> targetBlocks = player.getLastTwoTargetBlocks(stick.getIgnore(), stick.getDistance());
+			
+			// sanity check
+			if (targetBlocks.size() != 2) {
+			    plugin.log(Level.WARNING, "Did not get two blocks to work with");
+			    return;
+			}
+			
 			Block targetedBlock = null;
 			Block placedAgainstBlock = null;
 			

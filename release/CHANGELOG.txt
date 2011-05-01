@@ -1,8 +1,23 @@
 Listed below are released versions and cumulative changes between them
 
+0.6.4
+
+* check for player.getLastTwoTargetBlocks() not returning two blocks
+* tested with bukkit 740
+
 0.6.2
 
-* fix for permission bug
+* tested with bukkit 632
+* minor code refactoring
+
+0.6.0
+
+* changes for craftbukkit build 604
+* cleaned up the listener model, which is now much more straight forward
+
+0.5.5
+
+* fixed permission set-up when using own permissions
 
 0.5.4
 
