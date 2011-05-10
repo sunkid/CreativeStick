@@ -1,7 +1,8 @@
 Listed below are released versions and cumulative changes between them
 
-0.6.4
+0.6.5
 
+* fixed bug when player walks across a pressure plate
 * check for player.getLastTwoTargetBlocks() not returning two blocks
 * tested with bukkit 740
 

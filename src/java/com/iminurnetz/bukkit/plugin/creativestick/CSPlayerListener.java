@@ -96,6 +96,11 @@ public class CSPlayerListener extends PlayerListener {
     
     @Override
     public void onPlayerInteract(PlayerInteractEvent event) {
+        
+        if (event.getAction() == Action.PHYSICAL) {
+            return;
+        }
+        
         int mode = 0;
 		Player player = event.getPlayer();
 		Stick stick = null;
