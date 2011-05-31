@@ -179,14 +179,6 @@ public class Stick {
 		this.enabled = enabled;
 	}
 
-	public boolean setItem(String item) {
-		try {
-			return setItem(new Item(item));
-		} catch (InstantiationException e) {
-			return false;
-		}
-	}
-
 	public boolean setItem(Material material) {
 		return setItem(material, material.getNewData((byte) 0));
 	}

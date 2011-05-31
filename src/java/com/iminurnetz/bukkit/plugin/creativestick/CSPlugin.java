@@ -47,6 +47,7 @@ import com.iminurnetz.bukkit.plugin.BukkitPlugin;
 import com.iminurnetz.bukkit.plugin.util.MessageUtils;
 import com.iminurnetz.bukkit.plugin.util.PluginLogger;
 import com.iminurnetz.bukkit.util.InventoryUtil;
+import com.iminurnetz.bukkit.util.Item;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 import com.iminurnetz.util.PersistentProperty;
 import com.iminurnetz.util.StringUtils;
@@ -107,19 +108,27 @@ public class CSPlugin extends BukkitPlugin {
 			return true;
 		}
 		
-		boolean suc = stick.setItem(item);
-		if (!suc) {
-			MessageUtils.send(player, ChatColor.RED, "Invalid item specification.");
-			String match;
-			List<Material> items = MaterialUtils.getMatchingMaterials(item);
-			if (items.size() > 1)
-				match = MaterialUtils.getFormattedNameList(items).toString();
-			else
-				match = "no known items.";
+		Item i = null;
+		
+        try {
+            i = new Item(item);
+            stick.setItem(i);
+            return true;
+        } catch (InstantiationException e) {
+            // ignored
+        }
 
-			MessageUtils.send(player, "'" + item + "' matches " + match);
-		}
-		return suc;
+        MessageUtils.send(player, ChatColor.RED, "Invalid item specification.");
+        String match;
+        List<Material> items = MaterialUtils.getMatchingMaterials(item);
+        if (items.size() > 1)
+            match = MaterialUtils.getFormattedNameList(items).toString();
+        else
+            match = "no known items.";
+
+        MessageUtils.send(player, "'" + item + "' matches " + match);
+		
+		return false;
 	}
 
 	public boolean doConfig(Player player, Stick stick, String[] originalArgs) {
