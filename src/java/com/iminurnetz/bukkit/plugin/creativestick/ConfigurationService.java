@@ -32,10 +32,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 import org.bukkit.Material;
@@ -53,7 +51,7 @@ public class ConfigurationService {
 	private BukkitPlugin plugin;
 	
 	// used to check the config file for updates
-	public static final String LAST_CHANGED_IN_VERSION = "0.6.7";
+	public static final String LAST_CHANGED_IN_VERSION = "0.6.8";
 	
 	// TODO convert to enums
 	// global settings
@@ -271,7 +269,7 @@ public class ConfigurationService {
     }
 
 	public boolean isDebug() {
-		return config.getBoolean(USER_SETTINGS_TAG + ".debug", DEBUG);
+		return config.getBoolean(USER_SETTINGS_TAG + ".debug-mode", DEBUG);
 	}
 
 	public boolean doesNaturalDrops() {

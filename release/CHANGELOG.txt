@@ -1,8 +1,22 @@
 Listed below are released versions and cumulative changes between them
 
+0.6.8
+
+* added ability to use right-click in build and replace mode as well
+* tested with release build 818
+
+0.6.6
+
+* fixed bug where an item selection was called invalid when the player already had
+  selected that item
+* tested with release build 766
+
 0.6.5
 
 * fixed bug when player walks across a pressure plate
+
+0.6.4
+
 * check for player.getLastTwoTargetBlocks() not returning two blocks
 * tested with bukkit 740
 

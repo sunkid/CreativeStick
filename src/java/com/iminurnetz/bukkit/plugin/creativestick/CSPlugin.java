@@ -238,7 +238,7 @@ public class CSPlugin extends BukkitPlugin {
 			return true;
 		}
 
-		if (commandEquals(param, "debug")) {
+		if (commandEquals(param, "debug-mode")) {
 			boolean doDebug = StringUtils.isTrue(value);
 			stick.setDebug(doDebug);
 

@@ -6,7 +6,7 @@
 # CHANGE THE VERSION IN YOUR config.yml TO THE ONE BELOW.
 settings:
     # version of the last update of the config file
-    version: 0.6.7
+    version: 0.6.8
 
     # this will allow all ops by default to use the plugin
     # NOTE: it overrides GroupManager or Permissions system!
@@ -48,7 +48,7 @@ settings:
         right-click-switch: false
         
         # debug mode
-        debug: false
+        debug-mode: false
         
         # whether to receive only items that are naturally dropped
         natural-drops: false

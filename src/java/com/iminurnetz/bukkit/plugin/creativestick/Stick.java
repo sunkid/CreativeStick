@@ -264,6 +264,9 @@ public class Stick {
 		s.append("Right-Click item switching: ");
 		s.append(doRightClickSwitch());
 		s.append("\n");
+        s.append("Right-Click modes: ");
+        s.append(doRightClickModes());
+        s.append("\n");
 		s.append("Announcements: ");
 		s.append(doAnnounce());
 		s.append("\n");
