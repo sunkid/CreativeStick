@@ -6,7 +6,7 @@
 # CHANGE THE VERSION IN YOUR config.yml TO THE ONE BELOW.
 settings:
     # version of the last update of the config file
-    version: 0.6.0
+    version: 0.6.7
 
     # this will allow all ops by default to use the plugin
     # NOTE: it overrides GroupManager or Permissions system!
@@ -24,6 +24,7 @@ settings:
 
     # The following settings can be changed on a per-user basis in game
     # if the user has 'creativestick.config' permissions
+    # Use '/cs -c undo 10' or '/cs -c u 10' for example
     user:
         # how many steps to undo by default
         undo: 5
@@ -40,7 +41,10 @@ settings:
         # the tool to use as a stick (default is stick)
         tool: 280
 
-        # whether or not right-clicking switches to the item clicked on
+        # set right-click to work in all modes
+        right-click-modes: false
+
+        # whether or not right-clicking switches to the item clicked on in remove mode
         right-click-switch: false
         
         # debug mode

@@ -50,6 +50,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Ladder;
 import org.bukkit.material.MaterialData;
 
 import com.iminurnetz.bukkit.plugin.util.MessageUtils;
@@ -108,12 +109,9 @@ public class CSPlayerListener extends PlayerListener {
 		stick = plugin.getStick(player);
 		mode = stick.getMode();
 		
-		boolean isRightClick = false;
-		
-		if (event.getAction() == Action.RIGHT_CLICK_AIR || 
-            event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+		if (!stick.doRightClickModes() && (event.getAction() == Action.RIGHT_CLICK_AIR || 
+            event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 		    mode = Stick.REMOVE_MODE;
-		    isRightClick = true;
 		}
 
 		if (plugin.canUse(player, stick)) {
@@ -177,20 +175,10 @@ public class CSPlayerListener extends PlayerListener {
 					MessageUtils.send(player, "clicked " + face + " face! (" + player.getEyeLocation() + ")");
 				}
 				
-				switch (face) {
-				case WEST:
-					data = Material.LADDER.getNewData((byte) 2);
-					break;
-				case EAST:
-					data = Material.LADDER.getNewData((byte) 3);
-					break;
-				case SOUTH:
-					data = Material.LADDER.getNewData((byte) 4);
-					break;
-				case NORTH:
-					data = Material.LADDER.getNewData((byte) 5);
-					break;
-				}
+				Ladder ladder = new Ladder();
+				ladder.setFacingDirection(face);
+				data = ladder;
+
 			} else {
 				data = item.getData();
 			}
@@ -200,6 +188,7 @@ public class CSPlayerListener extends PlayerListener {
 			
             BlockState before = targetedBlock.getState();
 			if (mode == Stick.REMOVE_MODE) {
+			    stick.setDoItemSwitch(true);
 			    actionEvent = new BlockBreakEvent(targetedBlock, player);
 			} else if (MaterialUtils.isSameMaterial(item.getMaterial(), Material.FIRE)) {
                 actionEvent = new BlockIgniteEvent(targetedBlock, IgniteCause.FLINT_AND_STEEL, player);
@@ -210,9 +199,6 @@ public class CSPlayerListener extends PlayerListener {
 			plugin.getServer().getPluginManager().callEvent(actionEvent);
 			
 			if (!((Cancellable)actionEvent).isCancelled()) {
-			    if (isRightClick) {
-			        stick.setDoItemSwitch(true);
-			    }
 			    plugin.takeAction(before, after, player);
 			}
 		}

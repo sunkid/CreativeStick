@@ -2,6 +2,11 @@ Listed below are released versions and cumulative changes between them
 
 @version@.@minor_version@
 
+* added ability to use right-click in build and replace mode as well
+* tested with release build 818
+
+0.6.6
+
 * fixed bug where an item selection was called invalid when the player already had
   selected that item
 * tested with release build 766

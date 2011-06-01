@@ -50,6 +50,7 @@ public class Stick {
 	private int mode = REMOVE_MODE;
 	private boolean protectBottom;
 	private boolean rightClickSwitch;
+    private boolean rightClickModes;
 	private boolean debug;
 	private Material tool;
 	private int undoAmount;
@@ -66,6 +67,7 @@ public class Stick {
 		this.distance = configService.getDistance();
 		this.protectBottom = configService.doProtectBottom();
 		this.rightClickSwitch = configService.doRightClickSwitch();
+        this.rightClickModes = configService.doRightClickModes();
 		this.naturalDrops = configService.doesNaturalDrops();
 		this.announce = configService.doAnnounce();
 		this.setDebug(configService.isDebug());
@@ -155,6 +157,10 @@ public class Stick {
 		return rightClickSwitch;
 	}
 
+    public boolean doRightClickModes() {
+        return rightClickModes;
+    }
+
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
@@ -204,6 +210,10 @@ public class Stick {
 	public void setRightClickSwitch(boolean rightClickSwitch) {
 		this.rightClickSwitch = rightClickSwitch;
 	}
+
+    public void setRightClickModes(boolean rightClickModes) {
+        this.rightClickModes = rightClickModes;
+    }
 
 	public boolean setTool(String item) {
 		Material m = MaterialUtils.getMaterial(item);

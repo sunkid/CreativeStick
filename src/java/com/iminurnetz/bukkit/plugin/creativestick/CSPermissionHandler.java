@@ -118,4 +118,9 @@ public class CSPermissionHandler implements PermissionHandler {
         return permissionHandler.getGroup(player);
     }
 
+    @Override
+    public boolean parentGroupsInclude(Player player, String group) {
+        return permissionHandler.parentGroupsInclude(player, group);
+    }
+
 }

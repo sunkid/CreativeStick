@@ -150,7 +150,7 @@ public class CSPlugin extends BukkitPlugin {
 			MessageUtils.send(player, "value is " + value);
 		}
 		
-		if (param.equalsIgnoreCase("distance")) {
+		if (commandEquals(param, "distance")) {
 			int distance = stick.getDistance();
 			try {
 				distance = Integer.valueOf(value).intValue();
@@ -167,7 +167,7 @@ public class CSPlugin extends BukkitPlugin {
 			return true;
 		}
 
-		if (param.equalsIgnoreCase("tool")) {
+		if (commandEquals(param, "tool")) {
 			if (!stick.setTool(value)) {
 				MessageUtils.send(player, ChatColor.RED, "Bad tool name or id.");
 				return false;
@@ -176,7 +176,7 @@ public class CSPlugin extends BukkitPlugin {
 			return true;
 		}
 
-		if (param.equalsIgnoreCase("protect-bottom")) {
+		if (commandEquals(param, "protect-bottom")) {
 			boolean protectBottom = StringUtils.isTrue(value);
 			stick.doProtectBottom(protectBottom);
 
@@ -188,7 +188,7 @@ public class CSPlugin extends BukkitPlugin {
 			return true;
 		}
 
-		if (param.equalsIgnoreCase("natural-drops")) {
+		if (commandEquals(param, "natural-drops")) {
 			boolean naturalDrops = StringUtils.isTrue(value);
 			stick.setNaturalDrops(naturalDrops);
 
@@ -200,7 +200,19 @@ public class CSPlugin extends BukkitPlugin {
 			return true;
 		}
 
-		if (param.equalsIgnoreCase("right-click-switch")) {
+		if (commandEquals(param, "right-click-modes")) {
+            boolean doRightClickModes = StringUtils.isTrue(value);
+            stick.setRightClickModes(doRightClickModes);
+
+            if (doRightClickModes)
+                MessageUtils.send(player, "Right-Clicking now uses modes!");
+            else
+                MessageUtils.send(player, "Right-Clicking no longer uses modes");
+
+            return true;		    
+		}
+		
+		if (commandEquals(param, "right-click-switch")) {
 			boolean doRightClickSwitch = StringUtils.isTrue(value);
 			stick.setRightClickSwitch(doRightClickSwitch);
 
@@ -212,7 +224,7 @@ public class CSPlugin extends BukkitPlugin {
 			return true;
 		}
 
-		if (param.equalsIgnoreCase("undo")) {
+		if (commandEquals(param, "undo")) {
 			int undo;
 			try {
 				undo = Integer.valueOf(value).intValue();
@@ -226,7 +238,7 @@ public class CSPlugin extends BukkitPlugin {
 			return true;
 		}
 
-		if (param.equalsIgnoreCase("debug")) {
+		if (commandEquals(param, "debug")) {
 			boolean doDebug = StringUtils.isTrue(value);
 			stick.setDebug(doDebug);
 
@@ -238,7 +250,7 @@ public class CSPlugin extends BukkitPlugin {
 			return true;
 		}
 		
-		if (param.equalsIgnoreCase("announce")) {
+		if (commandEquals(param, "announce")) {
 			boolean announce = StringUtils.isTrue(value);
 			stick.setAnnounce(announce);
 
@@ -253,7 +265,25 @@ public class CSPlugin extends BukkitPlugin {
 		return false;
 	}
 
-	public void doIgnore(Player player, Stick stick, String[] originalArgs) {
+	private boolean commandEquals(String param, String string) {
+	    if ((param == null && string != null) || (param != null && string == null)) {
+	        return false;
+	    } else if (param == null) {
+	        return true;
+	    }
+	    
+	    String cmd = string.toLowerCase();
+	    String abbr = cmd.substring(0, 1);
+	    int n = cmd.indexOf('-');
+	    while (n != -1) {
+	        abbr += cmd.substring(n + 1, n + 2);
+	        n = cmd.indexOf('-', n + 1);
+	    }
+	    
+	    return (param.equalsIgnoreCase(cmd) || param.equalsIgnoreCase(abbr));
+    }
+
+    public void doIgnore(Player player, Stick stick, String[] originalArgs) {
 		if (originalArgs.length == 1) {
 			MessageUtils.send(player, ChatColor.RED, "Usage: /cs " + CreativeStickCommand.IGNORE.toString());
 			return;

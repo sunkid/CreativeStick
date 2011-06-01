@@ -53,7 +53,7 @@ public class ConfigurationService {
 	private BukkitPlugin plugin;
 	
 	// used to check the config file for updates
-	public static final String LAST_CHANGED_IN_VERSION = "0.6.0";
+	public static final String LAST_CHANGED_IN_VERSION = "0.6.7";
 	
 	// TODO convert to enums
 	// global settings
@@ -71,6 +71,8 @@ public class ConfigurationService {
 	public static final int DISTANCE = 100;
 	public static final Material TOOL = Material.STICK;
 	public static final boolean PROTECT_BOTTOM = true;
+    public static final boolean RIGHT_CLICK_SWITCH = false;
+    public static final boolean RIGHT_CLICK_MODES = false;
 	public static final boolean DEBUG = false;
 	public static final boolean NATURAL_DROPS = false;
 	public static final boolean ANNOUNCE = false;
@@ -261,8 +263,12 @@ public class ConfigurationService {
 	}
 
 	public boolean doRightClickSwitch() {
-		return config.getBoolean(USER_SETTINGS_TAG + ".right-click-switch", PROTECT_BOTTOM);
+		return config.getBoolean(USER_SETTINGS_TAG + ".right-click-switch", RIGHT_CLICK_SWITCH);
 	}
+
+    public boolean doRightClickModes() {
+        return config.getBoolean(USER_SETTINGS_TAG + ".right-click-modes", RIGHT_CLICK_MODES);
+    }
 
 	public boolean isDebug() {
 		return config.getBoolean(USER_SETTINGS_TAG + ".debug", DEBUG);
