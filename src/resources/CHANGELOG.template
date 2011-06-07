@@ -2,6 +2,10 @@ Listed below are released versions and cumulative changes between them
 
 @version@.@minor_version@
 
+* minor fixes
+
+0.6.7
+
 * added ability to use right-click in build and replace mode as well
 * tested with release build 818
 
