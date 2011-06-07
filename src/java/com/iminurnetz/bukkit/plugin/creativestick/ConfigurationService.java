@@ -51,7 +51,7 @@ public class ConfigurationService {
 	private BukkitPlugin plugin;
 	
 	// used to check the config file for updates
-	public static final String LAST_CHANGED_IN_VERSION = "0.6.8";
+	public static final String LAST_CHANGED_IN_VERSION = "0.6.9";
 	
 	// TODO convert to enums
 	// global settings
@@ -299,5 +299,9 @@ public class ConfigurationService {
 
     public int getMaxUndos() {
         return config.getInt(USER_SETTINGS_TAG + ".max-undos", MAX_UNDOS);
+    }
+
+    public boolean useBlockSpawnPermission() {
+        return config.getBoolean(SETTINGS_TAG + ".use-block-spawn-permission", false);
     }
 }

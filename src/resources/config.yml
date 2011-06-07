@@ -6,7 +6,7 @@
 # CHANGE THE VERSION IN YOUR config.yml TO THE ONE BELOW.
 settings:
     # version of the last update of the config file
-    version: 0.6.8
+    version: 0.6.9
 
     # this will allow all ops by default to use the plugin
     # NOTE: it overrides GroupManager or Permissions system!
@@ -17,6 +17,9 @@ settings:
 
     # should items be dropped by default
     drops: true
+    
+    # use the 'creativestick.spawn-blocks' permission (for backwards compatibility)
+    use-block-spawn-permission: false
     
     # the types of blocks to treat as transparent (list by id or name or fuzzy string
     ignore:

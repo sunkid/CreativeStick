@@ -113,8 +113,8 @@ public class CSPlayerListener extends PlayerListener {
             event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 		    mode = Stick.REMOVE_MODE;
 		}
-
-		if (plugin.canUse(player, stick)) {
+		
+		if (plugin.canUse(player, stick, mode)) {
 		    
 		    event.setCancelled(true);
 

@@ -1,5 +1,9 @@
 Listed below are released versions and cumulative changes between them
 
+0.6.9
+
+* added ability to restrict players to use blocks from their inventory
+
 0.6.8
 
 * minor fixes

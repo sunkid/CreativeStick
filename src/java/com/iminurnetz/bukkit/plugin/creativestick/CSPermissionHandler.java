@@ -39,6 +39,7 @@ public class CSPermissionHandler implements PermissionHandler {
 	public static final String CAN_USE_PERMISSION = "creativestick.use";
 	public static final String CAN_CONFIGURE_PERMISSION = "creativestick.config";
 	public static final String CAN_DO_EVERYTHING = "creativestick.*";
+    private static final String CAN_SPAWN_BLOCKS = "creativestick.spawn-blocks";
 	
 	private static HashMap<String, ArrayList<String>> permissions = new HashMap<String, ArrayList<String>>();
 
@@ -92,17 +93,16 @@ public class CSPermissionHandler implements PermissionHandler {
 	}
 
 	public boolean canUse(Player player) {
-		return (hasPermission(player, CAN_USE_PERMISSION) || canDoEverything(player));
+		return hasPermission(player, CAN_USE_PERMISSION);
 	}
 	
 	public boolean canUse(Player player, CreativeStickCommand command) {
-		return (hasPermission(player, command.getPermission()) || canDoEverything(player));
+		return hasPermission(player, command.getPermission());
 	}
 	
 	public boolean canConfigureAll(Player player) {
 		return (hasPermission(player, CAN_CONFIGURE_PERMISSION)
-				|| hasPermission(player, CAN_CONFIGURE_PERMISSION + ".*")
-				|| canDoEverything(player));
+				|| hasPermission(player, CAN_CONFIGURE_PERMISSION + ".*"));
 	}
 
 	public boolean canDoEverything(Player player) {
@@ -121,6 +121,10 @@ public class CSPermissionHandler implements PermissionHandler {
     @Override
     public boolean parentGroupsInclude(Player player, String group) {
         return permissionHandler.parentGroupsInclude(player, group);
+    }
+    
+    public boolean canSpawnBlocks(Player player) {
+        return hasPermission(player, CAN_SPAWN_BLOCKS);
     }
 
 }

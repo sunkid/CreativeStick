@@ -82,7 +82,18 @@ public class CSPlugin extends BukkitPlugin {
 		logger = getLogger();
 	}
 
-	public boolean canUse(Player player, Stick stick) {
+    public boolean canUse(Player player, Stick stick) {
+        return canUse(player, stick, stick.getMode());
+    }
+
+    public boolean canUse(Player player, Stick stick, int mode) {
+        if (configLoader.useBlockSpawnPermission() && 
+                !permissionHandler.canSpawnBlocks(player) &&
+                mode != Stick.REMOVE_MODE &&
+                !InventoryUtil.hasItem(player, stick.getItem())) {
+            return false;
+        }
+        
 		return((player.getItemInHand().getType() == stick.getTool())
 				&& stick.isEnabled()
 				&& permissionHandler.canUse(player));
@@ -550,7 +561,7 @@ public class CSPlugin extends BukkitPlugin {
 		permissionHandler = configLoader.getPermissionHandler();
 	}
 
-	public synchronized void takeAction(BlockState before, BlockState after, Player player) {
+	public void takeAction(BlockState before, BlockState after, Player player) {
         Stick stick = getStick(player);
         if (stick.doItemSwitch() && stick.setItem(before.getType(), before.getData())) {
             MessageUtils.send(player, "You are now working with "
@@ -559,16 +570,23 @@ public class CSPlugin extends BukkitPlugin {
 
         Block target = after.getBlock();
 
-        // this seems to be necessary for working with water?
-        target.setType(Material.AIR);
-        target.setData((byte) 0);
+        synchronized (target) {
+            // this seems to be necessary for working with water?
+            target.setType(Material.AIR);
+            target.setData((byte) 0);
 
-        target.setType(after.getType());
-        MaterialData data = after.getData();
-        if (data != null) {
-            target.setData(data.getData());
+            target.setType(after.getType());
+
+            if (configLoader.useBlockSpawnPermission() && target.getType() != Material.AIR && !permissionHandler.canSpawnBlocks(player)) {
+                InventoryUtil.remove(player, stick.getItem().getStack());
+            }
+
+            MaterialData data = after.getData();
+            if (data != null) {
+                target.setData(data.getData());
+            }
         }
-
+        
         if (stick.isDebug()) {
             log(player.getDisplayName() + " converted a block of "
                     + MaterialUtils.getFormattedName(before.getType()) + " to "
