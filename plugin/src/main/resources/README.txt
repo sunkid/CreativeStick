@@ -1,17 +1,16 @@
-@project@ v@version@.@minor_version@
-
-@build_date@
+${project.name} v${project.version} build ${buildNumber}
 
 INSTALL and UPGRADE
 
-1. Copy the included jar file to your server's plugin directory
+1. Copy the included jar files to your server's plugin directory
 2. Reload your server
-3. Change any configuration in plugins/@project@/config.yml as neccessary
+3. Change any configuration in plugins/${project.name}/config.yml as neccessary
 4. Reload your server
 
 LICENSING
 
-This software is copyright by sunkid <sunkid@iminurnetz.com> and is distributed under a dual license:
+This software is copyright by sunkid <sunkid@iminurnetz.com> and is
+distributed under a dual license:
 
 Non-Commercial Use:
     This program is free software: you can redistribute it and/or modify

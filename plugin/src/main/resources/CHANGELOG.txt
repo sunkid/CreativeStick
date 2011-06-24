@@ -1,6 +1,10 @@
 Listed below are released versions and cumulative changes between them
 
-@version@.@minor_version@
+${project.version}
+
+* changed to maven build and separate BaseBukkitPlugin dependency
+
+0.6.9
 
 * added ability to restrict players to use blocks from their inventory
 
