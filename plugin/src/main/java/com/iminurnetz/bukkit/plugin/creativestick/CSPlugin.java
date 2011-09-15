@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.block.Block;
@@ -94,13 +95,13 @@ public class CSPlugin extends BukkitPlugin {
             return false;
         }
         
-		return((player.getItemInHand().getType() == stick.getTool())
+        return ((player.getItemInHand().getType() == stick.getTool() || stick.isThrowBuild())
 				&& stick.isEnabled()
 				&& permissionHandler.canUse(player));
 	}
 
 	private void checkForTool(Player player, Stick stick) {
-		if (stick.isEnabled() && permissionHandler.canUse(player)) {
+        if (stick.isEnabled() && permissionHandler.canUse(player) && !stick.isThrowBuild()) {
 			// free sticks!! YEAH!!
 			if (!player.getInventory().contains(stick.getTool())) {
 				InventoryUtil.giveItems(player, stick.getTool(), player.getInventory().getHeldItemSlot());
@@ -273,6 +274,19 @@ public class CSPlugin extends BukkitPlugin {
 			return true;
 		}
 
+        if (commandEquals(param, "throw-build")) {
+            boolean throwBuild = StringUtils.isTrue(value);
+            stick.setThrowBuild(throwBuild);
+
+            if (throwBuild) {
+                MessageUtils.send(player, "throw-build mode enabled!");
+            } else {
+                MessageUtils.send(player, "throw-build mode disabled!");
+            }
+
+            return true;
+        }
+
 		return false;
 	}
 
@@ -330,10 +344,17 @@ public class CSPlugin extends BukkitPlugin {
 			BlockState blockState = blocks.remove(currentIndex--);
 
 			Block block = player.getWorld().getBlockAt(blockState.getX(), blockState.getY(), blockState.getZ());
+
+            if (configLoader.useBlockSpawnPermission() && !permissionHandler.canSpawnBlocks(player)) {
+                InventoryUtil.giveItems(player, new ItemStack(block.getType(), 1, (short) 0, block.getData()));
+            }
+
 			block.setTypeId(blockState.getTypeId());
 			block.setData(blockState.getRawData());
 
 		}
+
+        player.updateInventory();
 
 		blocks.trimToSize();
 		return blocksRemoved;
@@ -406,6 +427,11 @@ public class CSPlugin extends BukkitPlugin {
 		}
 
 		stick = sticks.get(player);
+
+        if (stick.isThrowBuild()) {
+            stick.setItem(new Item(player.getItemInHand()));
+        }
+
 		return stick;
 	}
 
@@ -594,7 +620,7 @@ public class CSPlugin extends BukkitPlugin {
         }
 
         stick.addBlock(before);
-        if (!MaterialUtils.isSameMaterial(before.getType(), Material.AIR)) {
+        if (!MaterialUtils.isSameMaterial(before.getType(), Material.AIR) && player.getGameMode() != GameMode.CREATIVE) {
             giveItems(player, before);
         }
 	}

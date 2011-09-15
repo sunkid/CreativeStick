@@ -51,7 +51,7 @@ public class ConfigurationService {
 	private BukkitPlugin plugin;
 	
 	// used to check the config file for updates
-	public static final String LAST_CHANGED_IN_VERSION = "0.6.9";
+    public static final String LAST_CHANGED_IN_VERSION = "0.7.1";
 	
 	// TODO convert to enums
 	// global settings
@@ -74,6 +74,7 @@ public class ConfigurationService {
 	public static final boolean DEBUG = false;
 	public static final boolean NATURAL_DROPS = false;
 	public static final boolean ANNOUNCE = false;
+    public static final boolean THROW_BUILD = false;
 	
 	// permissions
 	public static final String PERMISSIONS_TAG = "permissions";
@@ -303,5 +304,9 @@ public class ConfigurationService {
 
     public boolean useBlockSpawnPermission() {
         return config.getBoolean(SETTINGS_TAG + ".use-block-spawn-permission", false);
+    }
+
+    public boolean isThrowBuild() {
+        return config.getBoolean(USER_SETTINGS_TAG + ".throw-build", THROW_BUILD);
     }
 }

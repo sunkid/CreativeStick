@@ -22,9 +22,10 @@
 name: ${project.name}
 main: com.iminurnetz.bukkit.plugin.creativestick.CSPlugin
 version: ${project.version}
-authors: [sunkid <sunkid@iminurnetz.com>, Nijiko "Nijikokun" Yonskai <nijikokun@gmail.com>]
+authors: [sunkid <sunkid@iminurnetz.com>]
 website: https://github.com/sunkid/${project.name}
 depends: [BaseBukkitPlugin]
+softdepends: [Help]
 commands:
     cs:
         description: all of the ${project.name} commands

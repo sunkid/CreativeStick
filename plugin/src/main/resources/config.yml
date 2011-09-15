@@ -6,7 +6,7 @@
 # CHANGE THE VERSION IN YOUR config.yml TO THE ONE BELOW.
 settings:
     # version of the last update of the config file
-    version: 0.6.9
+    version: 0.7.1
 
     # this will allow all ops by default to use the plugin
     # NOTE: it overrides GroupManager or Permissions system!
@@ -43,6 +43,9 @@ settings:
 
         # the tool to use as a stick (default is stick)
         tool: 280
+        
+        # throw build mode does not require a tool
+        throw-build: false
 
         # set right-click to work in all modes
         right-click-modes: false
@@ -84,6 +87,8 @@ settings:
 #   creativestick.config.<param>  : only allows the user to change the 
 #                                   <param> config parameter
 #   creativestick.*               : allows a user to use every feature of the plugin
+#   creativestick.spawn-blocks    : allows a user to work with any block (depends on config
+#                                   setting above)
 # 
 # The plugin will try to port your old iStick.permissions file each time
 # it isn't able to find this file. If you already use either the Permissions

@@ -58,6 +58,7 @@ public class Stick {
 	private boolean announce;
 	private int maxUndos;
 	private long lastActionTakenAt;
+    private boolean isThrowBuild;
 	
     public Stick(ConfigurationService configService) {
 		this.ignore = configService.getIgnored();
@@ -74,6 +75,7 @@ public class Stick {
 		this.tool = configService.getTool();
 		this.maxUndos = configService.getMaxUndos();
 		this.lastActionTakenAt = new Date().getTime();
+        this.isThrowBuild = configService.isThrowBuild();
 	}
 
 	public void addBlock(BlockState blockState) {
@@ -334,4 +336,12 @@ public class Stick {
 		ignore(Material.AIR);
 		ignore(material);
 	}
+
+    public void setThrowBuild(boolean isThrowBuild) {
+        this.isThrowBuild = isThrowBuild;
+    }
+
+    public boolean isThrowBuild() {
+        return isThrowBuild;
+    }
 }

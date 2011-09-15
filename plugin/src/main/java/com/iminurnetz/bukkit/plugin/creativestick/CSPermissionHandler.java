@@ -27,6 +27,7 @@ package com.iminurnetz.bukkit.plugin.creativestick;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import com.iminurnetz.bukkit.permissions.DefaultPermissions;
@@ -124,7 +125,7 @@ public class CSPermissionHandler implements PermissionHandler {
     }
     
     public boolean canSpawnBlocks(Player player) {
-        return hasPermission(player, CAN_SPAWN_BLOCKS);
+        return (hasPermission(player, CAN_SPAWN_BLOCKS) || player.getGameMode() == GameMode.CREATIVE);
     }
 
 }

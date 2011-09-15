@@ -2,6 +2,13 @@ Listed below are released versions and cumulative changes between them
 
 ${project.version}
 
+* tested on 1.8+ CB builds
+* added throw-build support
+* made 'undo' give back blocks when player cannot spawn them
+* added support for creative game mode
+
+0.7
+
 * changed to maven build and separate BaseBukkitPlugin dependency
 
 0.6.9

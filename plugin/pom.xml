@@ -4,7 +4,7 @@
   <groupId>com.iminurnetz</groupId>
   <artifactId>bukkit.creativesticcreativestick-plugin</artifactId>
   <name>CreativeStick</name>
-  <version>0.7</version>
+  <version>0.7.1</version>
   <packaging>jar</packaging>
   <description>CreativeStick plugin for Bukkit servers</description>
   <parent>
@@ -24,13 +24,18 @@
     <dependency>
       <groupId>com.iminurnetz</groupId>
       <artifactId>bukkit.basebukkitplugin</artifactId>
-      <version>1.1</version>
+      <version>1.3</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.8.2</version>
-      <scope>compile</scope>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>me.taylorkelly</groupId>
+      <artifactId>help</artifactId>
+      <version>1</version>
     </dependency>
   </dependencies>
   <build>
@@ -119,6 +124,18 @@
           </execution>
         </executions>
       </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.9</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>2.9</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
     </plugins>
   </build>
   <scm>

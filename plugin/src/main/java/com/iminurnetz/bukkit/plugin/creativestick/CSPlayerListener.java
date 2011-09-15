@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -107,9 +108,21 @@ public class CSPlayerListener extends PlayerListener {
 		Stick stick = null;
 
 		stick = plugin.getStick(player);
+
 		mode = stick.getMode();
 		
-		if (!stick.doRightClickModes() && (event.getAction() == Action.RIGHT_CLICK_AIR || 
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+            if (player.getGameMode() == GameMode.CREATIVE && stick.isEnabled()) {
+                event.setCancelled(true);
+            }
+            return;
+        }
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && stick.isThrowBuild() && player.getItemInHand().getType() != stick.getTool()) {
+            return;
+        }
+
+        if (!stick.doRightClickModes() && (event.getAction() == Action.RIGHT_CLICK_AIR ||
             event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 		    mode = Stick.REMOVE_MODE;
 		}
@@ -129,12 +142,16 @@ public class CSPlayerListener extends PlayerListener {
 			Block targetedBlock = null;
 			Block placedAgainstBlock = null;
 			
-			Item item = stick.getItem();
+            Item item = stick.getItem();
 			
 			if (!item.isBlock()) {
 				item = MaterialUtils.getPlaceableMaterial(item);
 				if (!item.isBlock()) {
-					MessageUtils.send(player, ChatColor.RED, "Invalid item usage.");
+                    if (!stick.isThrowBuild()) {
+                        MessageUtils.send(player, ChatColor.RED, "Invalid item usage.");
+                    } else {
+                        event.setCancelled(false);
+                    }
 					return;
 				}
 			}
