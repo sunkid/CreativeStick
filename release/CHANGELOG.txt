@@ -1,5 +1,9 @@
 Listed below are released versions and cumulative changes between them
 
+0.7.2
+
+* added full support for bukkit permissions
+
 0.7.1
 
 * tested on 1.8+ CB builds

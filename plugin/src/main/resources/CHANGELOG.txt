@@ -2,6 +2,10 @@ Listed below are released versions and cumulative changes between them
 
 ${project.version}
 
+* added full support for bukkit permissions
+
+0.7.1
+
 * tested on 1.8+ CB builds
 * added throw-build support
 * made 'undo' give back blocks when player cannot spawn them

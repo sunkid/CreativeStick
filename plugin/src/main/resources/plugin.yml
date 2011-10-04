@@ -31,3 +31,61 @@ commands:
         description: all of the ${project.name} commands
         usage: /cs|is|istick|cstick [command] [parameters]. Use '/cs help' for more information!
         aliases: [is,istick,cstick]
+        
+permissions:
+    creativestick.*:
+        description: Players can use any feature of the CreativeStick plugin.
+        children:
+            creativestick.use: true
+            creativestick.spawn-blocks: true
+            creativestick.config.*: true
+
+    creativestick.use:
+        description: Players are allowed to use the plugin
+    
+    creativestick.spawn-blocks:
+        description: Players are allowed to build with blocks not in their inventory
+    
+    creativestick.config.*: 
+        description: Players can change any configuration parameters.
+        children:
+            creativestick.config.undo: true
+            creativestick.config.distance: true
+            creativestick.config.tool: true
+            creativestick.config.protect-bottom: true
+            creativestick.config.right-click-switch: true
+            creativestick.config.right-click-modes: true
+            creativestick.config.debug-mode: true
+            creativestick.config.natural-drops: true
+            creativestick.config.announce: true
+            creativestick.config.throw-build: true
+            
+    creativestick.config.undo:
+        description: Players are allowed to configure the 'undo' parameter
+    
+    creativestick.config.distance:
+        description: Players are allowed to configure the 'distance' parameter
+    
+    creativestick.config.tool:
+        description: Players are allowed to configure the 'tool' parameter
+    
+    creativestick.config.protect-bottom:
+        description: Players are allowed to configure the 'protect-bottom' parameter
+    
+    creativestick.config.right-click-switch:
+        description: Players are allowed to configure the 'right-click-switch' parameter
+    
+    creativestick.config.right-click-modes:
+        description: Players are allowed to configure the 'right-click-modes' parameter
+
+    creativestick.config.debug-mode:
+        description: Players are allowed to configure the 'debug-mode' parameter
+    
+    creativestick.config.natural-drops:
+        description: Players are allowed to configure the 'natural-drops' parameter
+
+    creativestick.config.announce:
+        description: Players are allowed to configure the 'announce' parameter
+
+    creativestick.config.throw-build:
+        description: Players are allowed to configure the 'throw-build' parameter
