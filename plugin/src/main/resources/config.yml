@@ -1,12 +1,11 @@
 # This is the default configuration for CreativeStick
-# You can use it instead of the old permissions and item.db files
 
 # IF THE VERSION BELOW IS NOT THE VERSION IN YOUR config.yml CHECK FOR
 # NEW PARAMETERS AND ADD THEM TO YOUR config.yml. THEN, AND ONLY THEN,
 # CHANGE THE VERSION IN YOUR config.yml TO THE ONE BELOW.
 settings:
     # version of the last update of the config file
-    version: 0.7.1
+    version: 0.8
 
     # this will allow all ops by default to use the plugin
     # NOTE: it overrides GroupManager or Permissions system!
@@ -61,37 +60,3 @@ settings:
         
         # show more announcement when turning CS on or selecting the activated tool
         announce: false
-        
-    # if you really want to use the old iStick configuration files,
-    # uncomment the following parameter
-    # ignore-yml: true
-
-# All permissions including the asterisks must be placed in single quotes
-# and assigned to individual users like so:
-#
-# permissions:
-#     user:
-#         - 'creativestick.use'
-#         - 'creativestick.config.undo'
-#         - 'creativestick.config.right-click-switch'    
-#     op_user:
-#         - 'creativestick.use'
-#         - 'creativestick.config'
-#
-# Currently supported permissions:
-#
-#   creativestick.use             : allows a user to use the plugin
-#   creativestick.config          : allows a user to also change all of the user
-#                                   configurations in-game
-#   creativestick.config.*        : same as above
-#   creativestick.config.<param>  : only allows the user to change the 
-#                                   <param> config parameter
-#   creativestick.*               : allows a user to use every feature of the plugin
-#   creativestick.spawn-blocks    : allows a user to work with any block (depends on config
-#                                   setting above)
-# 
-# The plugin will try to port your old iStick.permissions file each time
-# it isn't able to find this file. If you already use either the Permissions
-# plugin or the GroupManager plugin, those will be used instead and the
-# below will be ignored. In that case, simply assign the above permissions
-# to the users and groups in the configuration files for those plugins.

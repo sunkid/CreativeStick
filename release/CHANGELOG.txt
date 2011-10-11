@@ -1,5 +1,10 @@
 Listed below are released versions and cumulative changes between them
 
+0.8
+
+* elimination of iStick backwards compatibility
+* adaptation to bukkit's new configuration system
+
 0.7.2
 
 * added full support for bukkit permissions

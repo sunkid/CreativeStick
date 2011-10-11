@@ -60,7 +60,7 @@ public class Stick {
 	private long lastActionTakenAt;
     private boolean isThrowBuild;
 	
-    public Stick(ConfigurationService configService) {
+    public Stick(CSConfigurationService configService) {
 		this.ignore = configService.getIgnored();
 		this.enabled = configService.isEnabled();
 		this.drops = configService.doesDrop();

@@ -25,20 +25,23 @@
 package com.iminurnetz.bukkit.plugin.creativestick.tests;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.bukkit.util.config.Configuration;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.iminurnetz.bukkit.plugin.creativestick.ConfigurationService;
+import com.iminurnetz.bukkit.plugin.creativestick.CSConfigurationService;
 
-public class ConfigurationServiceTest extends TestCase {
-	public void testVersion() {
+public class CSConfigurationServiceTest extends TestCase {
+    public void testVersion() throws FileNotFoundException, IOException, InvalidConfigurationException {
 		URL topDir = getClass().getResource("/");
         File configFile = new File(topDir.getFile(), "../../src/main/resources/config.yml");
-		Configuration config = new Configuration(configFile);
-		config.load();
-		assertEquals(config.getString("settings.version", ""), ConfigurationService.LAST_CHANGED_IN_VERSION);
+        YamlConfiguration config = new YamlConfiguration();
+        config.load(configFile);
+        assertEquals(config.getDouble("settings.version", -1), CSConfigurationService.LAST_CHANGED_IN_VERSION);
 	}
 }

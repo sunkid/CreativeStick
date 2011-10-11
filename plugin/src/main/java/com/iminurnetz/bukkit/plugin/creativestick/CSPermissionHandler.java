@@ -46,7 +46,7 @@ public class CSPermissionHandler implements PermissionHandler {
 
 	private PermissionHandler permissionHandler;
 	private boolean useOwnPermissions = false;
-	private boolean enableOps = ConfigurationService.ALLOW_OPS;
+	private boolean enableOps = CSConfigurationService.ALLOW_OPS;
 
 	protected CSPermissionHandler(BukkitPlugin plugin, boolean enableOps) {
 		permissionHandler = PermissionHandlerService.getHandler(plugin);

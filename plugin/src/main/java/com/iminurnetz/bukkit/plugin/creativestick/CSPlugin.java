@@ -64,7 +64,7 @@ public class CSPlugin extends BukkitPlugin {
 
 	private static HashMap<Player, Stick> sticks = new HashMap<Player, Stick>();
 
-	protected ConfigurationService configLoader;
+	protected CSConfigurationService configLoader;
 
 	private final PlayerListener playerListener = new CSPlayerListener(this);
 	
@@ -583,7 +583,7 @@ public class CSPlugin extends BukkitPlugin {
 
 	public void setup() {
 		server = getServer();
-		configLoader = new ConfigurationService(this);
+		configLoader = new CSConfigurationService(this);
 		permissionHandler = configLoader.getPermissionHandler();
 	}
 
