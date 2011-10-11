@@ -1,4 +1,4 @@
-CreativeStick v0.7.2 build 24.20111004
+CreativeStick v0.7.2 build 27.20111010
 
 INSTALL and UPGRADE
 
