@@ -1,5 +1,9 @@
 Listed below are released versions and cumulative changes between them
 
+0.9
+
+* adapted to BaseBukkitPlugin version 1.8 - there is no need to install that jar manually anymore
+
 0.8
 
 * elimination of iStick backwards compatibility
