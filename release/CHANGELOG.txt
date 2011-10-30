@@ -1,6 +1,8 @@
 Listed below are released versions and cumulative changes between them
 
-1.0
+1.1
+
+* made BaseBukkitPlugin updates more fail-safe
 
 1.0
 
