@@ -124,7 +124,7 @@ public class CSConfigurationService extends ConfigurationService {
 	}
 
 	public HashSet<Byte> getIgnored() {
-        List<String> names = config.getList(SETTINGS_TAG + ".ignore", Collections.EMPTY_LIST);
+        List<String> names = config.getStringList(SETTINGS_TAG + ".ignore");
 		HashSet<Material> materials = new HashSet<Material>();
 		for (String name : names) {
 			Material m = MaterialUtils.getMaterial(name);

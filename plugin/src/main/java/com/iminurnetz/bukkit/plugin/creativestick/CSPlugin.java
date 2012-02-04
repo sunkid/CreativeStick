@@ -46,7 +46,6 @@ import org.bukkit.plugin.PluginManager;
 
 import com.iminurnetz.bukkit.plugin.BukkitPlugin;
 import com.iminurnetz.bukkit.plugin.util.MessageUtils;
-import com.iminurnetz.bukkit.plugin.util.PluginLogger;
 import com.iminurnetz.bukkit.util.InventoryUtil;
 import com.iminurnetz.bukkit.util.Item;
 import com.iminurnetz.bukkit.util.MaterialUtils;
@@ -56,7 +55,6 @@ import com.iminurnetz.util.StringUtils;
 public class CSPlugin extends BukkitPlugin {
 	public static ArrayList<Player> drop = new ArrayList<Player>();
 
-	protected static PluginLogger logger;
 	public static CSPermissionHandler permissionHandler;
 
 	protected static Server server;
@@ -77,11 +75,6 @@ public class CSPlugin extends BukkitPlugin {
     public int getMaximumServerVersion() {
         return this.MAX_SERVER_VERSION;
     }
-
-	public CSPlugin() {
-		super();
-		logger = getLogger();
-	}
 
     public boolean canUse(Player player, Stick stick) {
         return canUse(player, stick, stick.getMode());
