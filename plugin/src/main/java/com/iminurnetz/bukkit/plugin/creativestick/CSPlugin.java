@@ -38,8 +38,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.PluginManager;
@@ -64,7 +63,7 @@ public class CSPlugin extends BukkitPlugin {
 
 	protected CSConfigurationService configLoader;
 
-	private final PlayerListener playerListener = new CSPlayerListener(this);
+    private final Listener playerListener = new CSPlayerListener(this);
 	
 	public int MIN_SERVER_VERSION = 556;
     
@@ -558,11 +557,7 @@ public class CSPlugin extends BukkitPlugin {
 
 	private void registerEvents() {
 		PluginManager pm = server.getPluginManager();
-
-		pm.registerEvent(Event.Type.PLAYER_ANIMATION, playerListener, Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_ITEM_HELD, playerListener, Priority.Monitor, this);
+        pm.registerEvents(playerListener, this);
 	}
 
 	public void sendToggleMessage(Player player, Stick stick) {
