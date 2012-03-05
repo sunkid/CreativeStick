@@ -39,6 +39,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockEvent;
@@ -49,7 +51,7 @@ import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Ladder;
 import org.bukkit.material.MaterialData;
@@ -59,14 +61,14 @@ import com.iminurnetz.bukkit.util.Item;
 import com.iminurnetz.bukkit.util.LocationUtil;
 import com.iminurnetz.bukkit.util.MaterialUtils;
 
-public class CSPlayerListener extends PlayerListener {
+public class CSPlayerListener implements Listener {
 	public static CSPlugin plugin;
 
 	public CSPlayerListener(CSPlugin instance) {
 		plugin = instance;
 	}
     
-	@Override
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerJoin(PlayerJoinEvent event) {
     	checkStatus(event.getPlayer());
     }
@@ -74,7 +76,7 @@ public class CSPlayerListener extends PlayerListener {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private static ScheduledFuture<?> checkerHandle = null;
 
-    @Override
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onItemHeldChange(PlayerItemHeldEvent event) {
     	// need to wait for the itemChange to finish
     	final Player p = event.getPlayer();
@@ -96,7 +98,7 @@ public class CSPlayerListener extends PlayerListener {
     	}
     }
     
-    @Override
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract(PlayerInteractEvent event) {
         
         if (event.getAction() == Action.PHYSICAL) {
@@ -221,7 +223,7 @@ public class CSPlayerListener extends PlayerListener {
 		}
 	}
     
-    @Override
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerAnimation(PlayerAnimationEvent event) {
         final Player player = event.getPlayer();
         final Stick stick = plugin.getStick(player);
