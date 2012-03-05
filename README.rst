@@ -5,8 +5,11 @@ By sunkid
 
 CreativeStick - Build, replace, or remove blocks at a distance
 
-Discussion Forum Link: http://bit.ly/cs4bukkit
+Dev Bukkit Link: http://dev.bukkit.org/server-mods/creativestick/
 Source & Latest Release: https://github.com/sunkid/CreativeStick
+
+I appreciate any contributions, patches, or pull requests. To work on this plugin, you
+need to start at it's super-repository's level: https://github.com/sunkid/Bukkit-Plugins
 
 CREDITS
 -------
