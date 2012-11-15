@@ -4,7 +4,7 @@
   <groupId>com.iminurnetz</groupId>
   <artifactId>bukkit.creativesticcreativestick-plugin</artifactId>
   <name>CreativeStick</name>
-  <version>1.16</version>
+  <version>1.17</version>
   <packaging>jar</packaging>
   <description>CreativeStick plugin for Bukkit servers</description>
   <parent>
@@ -16,7 +16,7 @@
     <dependency>
       <groupId>com.iminurnetz</groupId>
       <artifactId>bukkit.basebukkitplugin</artifactId>
-      <version>2.9</version>
+      <version>3.0</version>
     </dependency>
     <dependency>
       <groupId>me.taylorkelly</groupId>

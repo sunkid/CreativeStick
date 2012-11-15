@@ -487,9 +487,9 @@ public class CSPlugin extends BukkitPlugin {
 			msg.append(" v");
 			msg.append(getVersion());
 			msg.append("\nWebsite: ");
-			msg.append(getDescription().getWebsite());
+			msg.append(getMyDescription().getWebsite());
 			msg.append("\nAuthors: ");
-			for (String author : getDescription().getAuthors()) {
+			for (String author : getMyDescription().getAuthors()) {
 				msg.append(author);
 				msg.append(", ");
 			}
